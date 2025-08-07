@@ -33,7 +33,7 @@ const ConnectionManager: React.FC = () => {
             type="text"
             value={customEndpoint}
             onChange={(e) => setCustomEndpoint(e.target.value)}
-            placeholder="http://localhost:8899"
+            placeholder="https://strongly-refined-hermit.ngrok-free.app"
             style={{ 
               width: '300px', 
               padding: '8px',
@@ -118,10 +118,7 @@ const ConnectionManager: React.FC = () => {
       <div style={{ marginTop: '15px', fontSize: '14px', color: '#6c757d' }}>
         <p><strong>Common Endpoints:</strong></p>
         <ul style={{ margin: '5px 0', paddingLeft: '20px' }}>
-          <li>Local: http://localhost:8899</li>
-          <li>Devnet: https://api.devnet.solana.com</li>
-          <li>Testnet: https://api.testnet.solana.com</li>
-          <li>Mainnet: https://api.mainnet-beta.solana.com</li>
+          <li>Mainnet: https://strongly-refined-hermit.ngrok-free.app</li>
         </ul>
       </div>
     </div>

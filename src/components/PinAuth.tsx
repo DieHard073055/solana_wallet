@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import VaultIcon from './VaultIcon';
 
 interface PinAuthProps {
   onPinEntered: (pin: string) => void;
@@ -40,56 +41,43 @@ const PinAuth: React.FC<PinAuthProps> = ({
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
+    <div className="flex flex-col items-center justify-center" style={{
       minHeight: '100vh',
-      backgroundColor: '#1a1a1a',
-      color: '#fff',
-      padding: '20px'
+      backgroundColor: 'var(--color-background)',
+      padding: 'var(--spacing-8)'
     }}>
-      <div style={{
-        backgroundColor: '#242424',
-        padding: '40px',
-        borderRadius: '12px',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-        textAlign: 'center',
-        maxWidth: '400px',
-        width: '100%'
-      }}>
-        <h2 style={{ marginBottom: '30px', color: '#007bff' }}>
-          {isUnlocking ? 'Enter PIN to unlock wallet' : 'Welcome to Solana Wallet'}
+      <div className="card text-center" style={{ maxWidth: '400px', width: '100%' }}>
+        <div className="card-body">
+        <div className="flex items-center justify-center mb-8">
+          <VaultIcon size={48} className="text-gold" unlocking={isUnlocking} />
+        </div>
+        
+        <h2 className="text-2xl font-semibold text-gold mb-12">
+          {isUnlocking ? 'Unlock your vault' : 'Welcome to Thijoori'}
         </h2>
 
         {!isUnlocking && (
-          <p style={{ color: '#b0b0b0', marginBottom: '30px' }}>
-            Enter your 4-digit PIN to access your wallet, or create a new one
+          <p className="text-secondary mb-12">
+            Enter your 4-digit PIN to access your vault
           </p>
         )}
 
         {/* PIN Display */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '10px',
-          marginBottom: '30px'
-        }}>
+        <div className="flex justify-center gap-4 mb-12">
           {[0, 1, 2, 3].map((index) => (
             <div
               key={index}
+              className="flex items-center justify-center"
               style={{
                 width: '50px',
                 height: '50px',
-                borderRadius: '50%',
-                backgroundColor: index < pin.length ? '#007bff' : '#3a3a3a',
-                border: '2px solid #555',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                borderRadius: 'var(--radius-full)',
+                backgroundColor: index < pin.length ? 'var(--color-primary-gold)' : 'var(--color-surface-alt)',
+                border: `2px solid ${index < pin.length ? 'var(--color-primary-gold)' : 'var(--color-divider)'}`,
                 fontSize: '24px',
-                color: '#fff'
+                color: index < pin.length ? 'var(--color-background)' : 'var(--color-text-muted)',
+                transition: 'all var(--duration-fast) var(--ease)',
+                boxShadow: index < pin.length ? 'var(--shadow-subtle)' : 'none'
               }}
             >
               {index < pin.length ? '●' : ''}
@@ -98,12 +86,13 @@ const PinAuth: React.FC<PinAuthProps> = ({
         </div>
 
         {error && (
-          <div style={{
-            backgroundColor: '#dc3545',
-            color: '#fff',
-            padding: '10px',
-            borderRadius: '4px',
-            marginBottom: '20px'
+          <div className="toast" style={{
+            backgroundColor: 'var(--color-status-error)',
+            color: 'white',
+            padding: 'var(--spacing-6) var(--spacing-8)',
+            borderRadius: 'var(--radius-sm)',
+            marginBottom: 'var(--spacing-8)',
+            boxShadow: 'var(--shadow-soft)'
           }}>
             {error}
           </div>
@@ -114,30 +103,22 @@ const PinAuth: React.FC<PinAuthProps> = ({
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '15px',
-          marginBottom: '20px'
+          gap: 'var(--spacing-8)',
+          marginBottom: 'var(--spacing-8)'
         }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((digit) => (
             <button
               key={digit}
+              className="btn-ghost"
               onClick={() => handleDigitClick(digit.toString())}
               style={{
                 width: '60px',
                 height: '60px',
-                borderRadius: '50%',
-                backgroundColor: '#3a3a3a',
-                border: '2px solid #555',
-                color: '#fff',
+                borderRadius: 'var(--radius-full)',
                 fontSize: '20px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.backgroundColor = '#4a4a4a';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.backgroundColor = '#3a3a3a';
+                fontWeight: '600',
+                border: '2px solid var(--color-divider)',
+                color: 'var(--color-text-primary)'
               }}
             >
               {digit}
@@ -146,65 +127,47 @@ const PinAuth: React.FC<PinAuthProps> = ({
         </div>
 
         {/* Bottom row with 0, backspace */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '15px',
-          marginBottom: '30px'
-        }}>
+        <div className="flex justify-center gap-8 mb-12">
           <button
+            className="btn btn-danger"
             onClick={handleClear}
             style={{
               width: '60px',
               height: '60px',
-              borderRadius: '50%',
-              backgroundColor: '#dc3545',
-              border: '2px solid #dc3545',
-              color: '#fff',
+              borderRadius: 'var(--radius-full)',
               fontSize: '16px',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
+              padding: 0
             }}
           >
             C
           </button>
           
           <button
+            className="btn-ghost"
             onClick={() => handleDigitClick('0')}
             style={{
               width: '60px',
               height: '60px',
-              borderRadius: '50%',
-              backgroundColor: '#3a3a3a',
-              border: '2px solid #555',
-              color: '#fff',
+              borderRadius: 'var(--radius-full)',
               fontSize: '20px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = '#4a4a4a';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = '#3a3a3a';
+              fontWeight: '600',
+              border: '2px solid var(--color-divider)',
+              color: 'var(--color-text-primary)',
+              padding: 0
             }}
           >
             0
           </button>
           
           <button
+            className="btn btn-secondary"
             onClick={handleBackspace}
             style={{
               width: '60px',
               height: '60px',
-              borderRadius: '50%',
-              backgroundColor: '#6c757d',
-              border: '2px solid #6c757d',
-              color: '#fff',
+              borderRadius: 'var(--radius-full)',
               fontSize: '16px',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
+              padding: 0
             }}
           >
             ⌫
@@ -213,33 +176,26 @@ const PinAuth: React.FC<PinAuthProps> = ({
 
         {isUnlocking && (
           <div style={{
-            borderTop: '1px solid #555',
-            paddingTop: '20px'
+            borderTop: '1px solid var(--color-divider)',
+            paddingTop: 'var(--spacing-8)'
           }}>
-            <p style={{ color: '#b0b0b0', marginBottom: '15px', fontSize: '12px' }}>
+            <p className="text-muted text-xs mb-6">
               Having trouble? Clear all data and start fresh:
             </p>
             <button
+              className="btn btn-danger btn-sm"
               onClick={() => {
                 if (confirm('This will delete all wallet data. Are you sure?')) {
                   localStorage.clear();
                   window.location.reload();
                 }
               }}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: '#dc3545',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '12px'
-              }}
             >
               Reset All Data
             </button>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

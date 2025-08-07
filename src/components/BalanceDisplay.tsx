@@ -25,190 +25,150 @@ const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ connection, publicKey, 
 
   if (!isConnected || !publicKey) {
     return (
-      <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px', margin: '10px 0' }}>
-        <h3>Account Balance</h3>
-        <p style={{ color: '#6c757d' }}>Connect your wallet to view balances</p>
+      <div className="card">
+        <div className="card-body text-center">
+          <h3 className="text-xl text-secondary mb-8">Account Balance</h3>
+          <p className="text-muted">Connect your wallet to view balances</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px', margin: '10px 0' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h3>Account Balance</h3>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button 
-            onClick={() => setShowQRCode(!showQRCode)}
-            style={{ 
-              padding: '8px 16px',
-              backgroundColor: showQRCode ? '#28a745' : '#6f42c1',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            {showQRCode ? 'Hide QR' : 'Show QR'}
-          </button>
-          <button 
-            onClick={refreshBalances}
-            disabled={isLoading}
-            style={{ 
-              padding: '8px 16px',
-              backgroundColor: isLoading ? '#6c757d' : '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: isLoading ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {isLoading ? 'Refreshing...' : 'Refresh'}
-          </button>
-        </div>
-      </div>
-
-      {error && (
-        <div style={{ 
-          padding: '10px', 
-          backgroundColor: '#f8d7da', 
-          border: '1px solid #f5c6cb', 
-          borderRadius: '4px',
-          color: '#721c24',
-          marginBottom: '15px'
-        }}>
-          {error}
-        </div>
-      )}
-
-      {showQRCode && publicKey && (
-        <div style={{ 
-          textAlign: 'center', 
-          marginBottom: '25px',
-          padding: '20px',
-          backgroundColor: '#f8f9fa',
-          border: '1px solid #dee2e6',
-          borderRadius: '8px'
-        }}>
-          <h4 style={{ marginBottom: '15px', color: '#333' }}>Your Wallet Address</h4>
-          <QRCodeGenerator value={publicKey} size={200} />
-          <div style={{ 
-            marginTop: '15px',
-            padding: '10px',
-            backgroundColor: '#e9ecef',
-            borderRadius: '4px',
-            wordBreak: 'break-all',
-            fontSize: '12px',
-            color: '#495057',
-            fontFamily: 'monospace'
-          }}>
-            {publicKey}
+    <div className="card">
+      <div className="card-body">
+        <div className="flex justify-between items-center mb-8">
+          <h3 className="text-xl font-semibold text-primary">Vault Balance</h3>
+          <div className="flex gap-4">
+            <button 
+              className={`btn btn-sm ${showQRCode ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => setShowQRCode(!showQRCode)}
+            >
+              {showQRCode ? 'Hide QR' : 'Show QR'}
+            </button>
+            <button 
+              className="btn btn-primary btn-sm"
+              onClick={refreshBalances}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Refreshing...' : 'Refresh'}
+            </button>
           </div>
-          <button
-            onClick={() => navigator.clipboard.writeText(publicKey)}
-            style={{
-              marginTop: '10px',
-              padding: '6px 12px',
-              backgroundColor: '#17a2b8',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '12px'
-            }}
-          >
-            Copy Address
-          </button>
         </div>
-      )}
 
-      <div>
-        <h4>Token Balances</h4>
-        {allTokens.length === 0 ? (
-          <div style={{ 
-            padding: '15px', 
-            backgroundColor: '#3a3a3a', 
-            border: '1px solid #555', 
-            borderRadius: '4px',
-            color: '#b0b0b0',
-            textAlign: 'center'
+        {error && (
+          <div className="toast" style={{
+            backgroundColor: 'var(--color-status-error)',
+            color: 'white',
+            padding: 'var(--spacing-6)',
+            borderRadius: 'var(--radius-sm)',
+            marginBottom: 'var(--spacing-8)'
           }}>
-            No tokens found
-          </div>
-        ) : (
-          <div style={{ 
-            maxHeight: '400px', 
-            overflowY: 'auto',
-            border: '1px solid #555',
-            borderRadius: '4px'
-          }}>
-            {allTokens.map((token, index) => (
-              <div 
-                key={token.mint} 
-                style={{ 
-                  padding: '15px', 
-                  borderBottom: index < allTokens.length - 1 ? '1px solid #555' : 'none',
-                  backgroundColor: index % 2 === 0 ? '#3a3a3a' : '#2a2a2a',
-                  color: '#fff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '15px'
-                }}
-              >
-                {token.logoURI && (
-                  <img 
-                    src={token.logoURI} 
-                    alt={token.name || token.symbol || 'Token'}
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '50%',
-                      objectFit: 'cover',
-                      backgroundColor: '#555',
-                      border: '2px solid #666'
-                    }}
-                    onError={(e) => {
-                      // Hide image if it fails to load
-                      e.currentTarget.style.display = 'none';
-                    }}
-                  />
-                )}
-                <div style={{ flex: 1 }}>
-                  <div style={{ marginBottom: '8px' }}>
-                    <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#fff' }}>
-                      {token.name || `Token ${shortenAddress(token.mint)}`}
-                    </div>
-                    {token.symbol && (
-                      <div style={{ fontSize: '14px', color: '#b0b0b0' }}>
-                        {token.symbol}
-                      </div>
-                    )}
-                  </div>
-                  <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#4CAF50' }}>
-                    {formatBalance(token)}
-                  </div>
-                  <div style={{ fontSize: '12px', color: '#b0b0b0', marginTop: '4px' }}>
-                    <strong>Mint:</strong> {shortenAddress(token.mint)}
-                    <span 
-                      style={{ 
-                        marginLeft: '10px', 
-                        cursor: 'pointer',
-                        textDecoration: 'underline'
-                      }}
-                      onClick={() => navigator.clipboard.writeText(token.mint)}
-                      title="Click to copy full address"
-                    >
-                      (copy)
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
+            {error}
           </div>
         )}
-      </div>
 
-      <div style={{ marginTop: '15px', fontSize: '12px', color: '#6c757d' }}>
-        <p>💡 Tip: Click on token mint addresses to copy the full address to clipboard</p>
+        {showQRCode && publicKey && (
+          <div className="card-alt text-center mb-8">
+            <div className="card-body">
+              <h4 className="text-lg font-medium text-gold mb-8">Your Vault Address</h4>
+              <QRCodeGenerator value={publicKey} size={200} />
+              <div className="input font-mono text-xs mt-8" style={{ 
+                wordBreak: 'break-all',
+                backgroundColor: 'var(--color-surface-alt)',
+                border: '1px solid var(--color-divider)'
+              }}>
+                {publicKey}
+              </div>
+              <button
+                className="btn btn-primary btn-sm mt-4"
+                onClick={() => navigator.clipboard.writeText(publicKey)}
+              >
+                Copy Address
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div>
+          <h4 className="text-lg font-medium text-secondary mb-8">Asset Portfolio</h4>
+          {allTokens.length === 0 ? (
+            <div className="card-alt text-center">
+              <div className="card-body">
+                <p className="text-muted">No assets found in vault</p>
+              </div>
+            </div>
+          ) : (
+            <div className="card-alt" style={{ 
+              maxHeight: '400px', 
+              overflowY: 'auto'
+            }}>
+              {allTokens.map((token, index) => (
+                <div 
+                  key={token.mint} 
+                  className="flex items-center gap-8"
+                  style={{ 
+                    padding: 'var(--spacing-8)', 
+                    borderBottom: index < allTokens.length - 1 ? '1px solid var(--color-divider)' : 'none'
+                  }}
+                >
+                  {token.logoURI && (
+                    <img 
+                      src={token.logoURI} 
+                      alt={token.name || token.symbol || 'Token'}
+                      style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: 'var(--radius-full)',
+                        objectFit: 'cover',
+                        backgroundColor: 'var(--color-surface)',
+                        border: '2px solid var(--color-divider)',
+                        boxShadow: 'var(--shadow-subtle)'
+                      }}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  )}
+                  <div style={{ flex: 1 }}>
+                    <div className="mb-4">
+                      <div className="text-base font-semibold text-primary">
+                        {token.name || `Token ${shortenAddress(token.mint)}`}
+                      </div>
+                      {token.symbol && (
+                        <div className="text-sm text-secondary">
+                          {token.symbol}
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-lg font-bold text-success font-mono">
+                      {formatBalance(token)}
+                    </div>
+                    <div className="text-xs text-muted mt-2">
+                      <strong>Mint:</strong> {shortenAddress(token.mint)}
+                      <span 
+                        className="text-gold"
+                        style={{ 
+                          marginLeft: 'var(--spacing-4)', 
+                          cursor: 'pointer',
+                          textDecoration: 'underline'
+                        }}
+                        onClick={() => navigator.clipboard.writeText(token.mint)}
+                        title="Click to copy full address"
+                      >
+                        (copy)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="mt-8 text-xs text-muted text-center">
+          <p>💡 Tip: Click on token mint addresses to copy the full address to clipboard</p>
+        </div>
       </div>
     </div>
   );

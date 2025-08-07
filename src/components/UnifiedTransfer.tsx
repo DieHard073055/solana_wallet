@@ -262,183 +262,153 @@ const UnifiedTransfer: React.FC<UnifiedTransferProps> = ({ connection, allTokens
 
   if (!wallet.isConnected) {
     return (
-      <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px', margin: '10px 0' }}>
-        <h3>Send Tokens</h3>
-        <p style={{ color: '#6c757d' }}>Connect your wallet to send tokens</p>
+      <div className="card">
+        <div className="card-body text-center">
+          <h3 className="text-xl text-secondary mb-8">Send Assets</h3>
+          <p className="text-muted">Connect your vault to send assets</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px', margin: '10px 0' }}>
-      <h3>Send Tokens</h3>
-      
-      <div style={{ marginBottom: '20px' }}>
-        {/* Token Selection */}
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            Select Token:
-          </label>
-          <select
-            value={selectedToken?.mint || ''}
-            onChange={(e) => {
-              const token = allTokens.find(t => t.mint === e.target.value);
-              setSelectedToken(token || null);
-              setAmount(''); // Reset amount when token changes
-            }}
-            style={{ 
-              width: '100%', 
-              padding: '10px',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              fontSize: '14px'
-            }}
-          >
+    <div className="card">
+      <div className="card-body">
+        <h3 className="text-xl font-semibold text-primary mb-8">Send Assets</h3>
+        
+        <div className="mb-8">
+          {/* Token Selection */}
+          <div className="mb-8">
+            <label className="block text-sm font-medium text-secondary mb-4">
+              Select Asset:
+            </label>
+            <select
+              className="input"
+              value={selectedToken?.mint || ''}
+              onChange={(e) => {
+                const token = allTokens.find(t => t.mint === e.target.value);
+                setSelectedToken(token || null);
+                setAmount('');
+              }}
+            >
             <option value="">Select a token...</option>
             {allTokens.map((token) => (
               <option key={token.mint} value={token.mint}>
                 {getTokenSymbol(token)} - {token.name || shortenAddress(token.mint)} (Balance: {getTokenBalance(token).toFixed(token.decimals)})
               </option>
             ))}
-          </select>
-          {allTokens.length === 0 && (
-            <p style={{ fontSize: '12px', color: '#6c757d', marginTop: '5px' }}>
-              No tokens found. Please check your wallet balance.
-            </p>
-          )}
-        </div>
+            </select>
+            {allTokens.length === 0 && (
+              <p className="text-xs text-muted mt-2">
+                No assets found. Please check your vault balance.
+              </p>
+            )}
+          </div>
 
-        {/* Recipient Address */}
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            Recipient Address:
-          </label>
-          <div style={{ display: 'flex', gap: '10px' }}>
+          {/* Recipient Address */}
+          <div className="mb-8">
+            <label className="block text-sm font-medium text-secondary mb-4">
+              Recipient Address:
+            </label>
+            <div className="flex gap-4">
+              <input
+                type="text"
+                className="input font-mono"
+                value={recipient}
+                onChange={(e) => setRecipient(e.target.value)}
+                placeholder="Enter recipient's Solana address"
+                style={{ flex: 1 }}
+              />
+              <button
+                type="button"
+                className={`btn ${showScanner ? 'btn-danger' : 'btn-secondary'}`}
+                onClick={() => setShowScanner(!showScanner)}
+                style={{ whiteSpace: 'nowrap' }}
+              >
+                {showScanner ? '✕ Close' : '📷 Scan QR'}
+              </button>
+            </div>
+            
+            {showScanner && (
+              <div className="mt-8">
+                <QRCodeScanner
+                  isActive={showScanner}
+                  onScan={handleQRScan}
+                  onError={handleScanError}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Amount */}
+          <div className="mb-8">
+            <label className="block text-sm font-medium text-secondary mb-4">
+              Amount{selectedToken ? ` (${getTokenSymbol(selectedToken)})` : ''}:
+            </label>
             <input
-              type="text"
-              value={recipient}
-              onChange={(e) => setRecipient(e.target.value)}
-              placeholder="Enter recipient's Solana address"
-              style={{ 
-                flex: 1, 
-                padding: '10px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                fontSize: '14px'
+              type="number"
+              className="input font-mono"
+              step={selectedToken ? `${1 / Math.pow(10, selectedToken.decimals)}` : "0.000000001"}
+              min="0"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder={selectedToken ? `Enter amount in ${getTokenSymbol(selectedToken)}` : "Select an asset first"}
+              disabled={!selectedToken}
+              style={{
+                backgroundColor: !selectedToken ? 'var(--color-surface-alt)' : 'var(--color-surface-alt)',
+                opacity: !selectedToken ? 0.6 : 1
               }}
             />
-            <button
-              type="button"
-              onClick={() => setShowScanner(!showScanner)}
-              style={{
-                padding: '10px 15px',
-                backgroundColor: showScanner ? '#dc3545' : '#28a745',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              {showScanner ? '✕ Close' : '📷 Scan QR'}
-            </button>
+            {selectedToken && (
+              <p className="text-xs text-muted mt-2">
+                Available: <span className="font-mono text-success">{getTokenBalance(selectedToken).toFixed(selectedToken.decimals)} {getTokenSymbol(selectedToken)}</span>
+              </p>
+            )}
           </div>
-          
-          {showScanner && (
-            <div style={{ marginTop: '15px' }}>
-              <QRCodeScanner
-                isActive={showScanner}
-                onScan={handleQRScan}
-                onError={handleScanError}
-              />
-            </div>
-          )}
+
+          <button 
+            className="btn btn-primary btn-lg"
+            onClick={handleTransfer}
+            disabled={isTransacting || !connection || !selectedToken}
+            style={{ width: '100%' }}
+          >
+            {isTransacting ? 'Sending...' : selectedToken ? `Send ${getTokenSymbol(selectedToken)}` : 'Select Asset First'}
+          </button>
         </div>
 
-        {/* Amount */}
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            Amount{selectedToken ? ` (${getTokenSymbol(selectedToken)})` : ''}:
-          </label>
-          <input
-            type="number"
-            step={selectedToken ? `${1 / Math.pow(10, selectedToken.decimals)}` : "0.000000001"}
-            min="0"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder={selectedToken ? `Enter amount in ${getTokenSymbol(selectedToken)}` : "Select a token first"}
-            disabled={!selectedToken}
-            style={{ 
-              width: '100%', 
-              padding: '10px',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              fontSize: '14px',
-              backgroundColor: !selectedToken ? '#f5f5f5' : 'white'
-            }}
-          />
-          {selectedToken && (
-            <p style={{ fontSize: '12px', color: '#6c757d', marginTop: '5px' }}>
-              Available: {getTokenBalance(selectedToken).toFixed(selectedToken.decimals)} {getTokenSymbol(selectedToken)}
-            </p>
-          )}
-        </div>
-
-        <button 
-          onClick={handleTransfer}
-          disabled={isTransacting || !connection || !selectedToken}
-          style={{ 
-            width: '100%',
-            padding: '12px',
-            backgroundColor: (isTransacting || !selectedToken) ? '#6c757d' : '#007bff',
+        {error && (
+          <div className="toast mb-8" style={{
+            backgroundColor: 'var(--color-status-error)',
             color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: (isTransacting || !selectedToken) ? 'not-allowed' : 'pointer',
-            fontSize: '16px',
-            fontWeight: 'bold'
-          }}
-        >
-          {isTransacting ? 'Sending...' : selectedToken ? `Send ${getTokenSymbol(selectedToken)}` : 'Select Token First'}
-        </button>
-      </div>
-
-      {error && (
-        <div style={{ 
-          padding: '12px', 
-          backgroundColor: '#f8d7da', 
-          border: '1px solid #f5c6cb', 
-          borderRadius: '4px',
-          color: '#721c24',
-          marginBottom: '15px'
-        }}>
-          <strong>Error:</strong> {error}
-        </div>
-      )}
-
-      {success && (
-        <div style={{ 
-          padding: '12px', 
-          backgroundColor: '#d4edda', 
-          border: '1px solid #c3e6cb', 
-          borderRadius: '4px',
-          color: '#155724',
-          wordBreak: 'break-all'
-        }}>
-          <strong>Success:</strong> {success}
-        </div>
-      )}
-
-      <div style={{ marginTop: '15px', fontSize: '12px', color: '#6c757d' }}>
-        <p><strong>Note:</strong> Transaction fees will be deducted from your SOL balance</p>
-        <p><strong>Tip:</strong> Double-check the recipient address and amount before sending</p>
-        {selectedToken?.mint === '11111111111111111111111111111112' && (
-          <p><strong>SOL Transfers:</strong> Amount may be automatically increased to meet minimum rent exemption requirements for dormant accounts</p>
+            padding: 'var(--spacing-6)',
+            borderRadius: 'var(--radius-sm)'
+          }}>
+            <strong>Error:</strong> {error}
+          </div>
         )}
-        {selectedToken?.mint !== '11111111111111111111111111111112' && (
-          <p><strong>Token Transfers:</strong> If the recipient doesn't have a token account, one will be created automatically</p>
+
+        {success && (
+          <div className="toast success mb-8" style={{
+            backgroundColor: 'var(--color-status-success)',
+            color: 'white',
+            padding: 'var(--spacing-6)',
+            borderRadius: 'var(--radius-sm)',
+            wordBreak: 'break-all'
+          }}>
+            <strong>Success:</strong> {success}
+          </div>
         )}
+
+        <div className="mt-8 text-xs text-muted" style={{ lineHeight: 'var(--line-height-relaxed)' }}>
+          <p className="mb-2"><strong>Note:</strong> Transaction fees will be deducted from your SOL balance</p>
+          <p className="mb-2"><strong>Tip:</strong> Double-check the recipient address and amount before sending</p>
+          {selectedToken?.mint === '11111111111111111111111111111112' && (
+            <p className="mb-2"><strong>SOL Transfers:</strong> Amount may be automatically increased to meet minimum rent exemption requirements for dormant accounts</p>
+          )}
+          {selectedToken?.mint !== '11111111111111111111111111111112' && (
+            <p className="mb-2"><strong>Token Transfers:</strong> If the recipient doesn't have a token account, one will be created automatically</p>
+          )}
+        </div>
       </div>
     </div>
   );

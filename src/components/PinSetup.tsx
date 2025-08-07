@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import VaultIcon from './VaultIcon';
 
 interface PinSetupProps {
   onPinSetup: (pin: string) => Promise<boolean>;
@@ -185,32 +186,24 @@ const PinSetup: React.FC<PinSetupProps> = ({
   );
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
+    <div className="flex flex-col items-center justify-center" style={{
       minHeight: '100vh',
-      backgroundColor: '#1a1a1a',
-      color: '#fff',
-      padding: '20px'
+      backgroundColor: 'var(--color-background)',
+      padding: 'var(--spacing-8)'
     }}>
-      <div style={{
-        backgroundColor: '#242424',
-        padding: '40px',
-        borderRadius: '12px',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-        textAlign: 'center',
-        maxWidth: '500px',
-        width: '100%'
-      }}>
-        <h2 style={{ marginBottom: '20px', color: '#007bff' }}>
-          Set Up Your PIN
+      <div className="card text-center" style={{ maxWidth: '500px', width: '100%' }}>
+        <div className="card-body">
+        <div className="flex items-center justify-center mb-8">
+          <VaultIcon size={48} className="text-gold" />
+        </div>
+        
+        <h2 className="text-2xl font-semibold text-gold mb-8">
+          Secure Your Vault
         </h2>
         
-        <p style={{ color: '#b0b0b0', marginBottom: '30px', fontSize: '14px' }}>
+        <p className="text-secondary text-sm mb-12">
           {step === 'enter' 
-            ? 'Create a 4-digit PIN to secure your wallet. This PIN will be used to encrypt all your wallets.'
+            ? 'Create a 4-digit PIN to secure your vault. This PIN will encrypt all your assets.'
             : 'Please confirm your PIN by entering it again.'
           }
         </p>
@@ -320,6 +313,7 @@ const PinSetup: React.FC<PinSetupProps> = ({
             ⚠️ <strong>Important:</strong> Remember your PIN! It will be required to access your wallet. 
             If you forget it, you'll need to reset and lose access to your current wallet.
           </p>
+        </div>
         </div>
       </div>
     </div>

@@ -1,82 +1,33 @@
-* {
-  box-sizing: border-box;
+/* App-specific styles - most styling is handled by design-system.css */
+
+/* Legacy compatibility styles - will be removed as components are updated */
+.grid-responsive {
+  grid-template-columns: 1fr !important;
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  background-color: #1a1a1a;
-  color: #ffffff;
+/* Component-specific overrides that can't be handled by design system */
+.app-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: var(--spacing-8);
 }
 
-#root {
-  width: 100%;
-  min-height: 100vh;
+/* Temporary styles for components not yet updated */
+.legacy-button {
+  transition: all var(--duration-fast) var(--ease);
 }
 
-button {
-  transition: all 0.3s ease;
-}
-
-button:hover:not(:disabled) {
+.legacy-button:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-soft);
 }
 
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.legacy-input {
+  transition: border-color var(--duration-fast) var(--ease);
 }
 
-input, select, textarea {
-  transition: border-color 0.3s ease;
-}
-
-input:focus, select:focus, textarea:focus {
+.legacy-input:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
-@media (max-width: 768px) {
-  .App {
-    padding: 10px;
-  }
-  
-  .grid-responsive {
-    grid-template-columns: 1fr !important;
-  }
-  
-  button {
-    font-size: 14px;
-    padding: 8px 12px;
-  }
-  
-  input, select, textarea {
-    font-size: 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  h1 {
-    font-size: 1.8rem !important;
-  }
-  
-  h3 {
-    font-size: 1.2rem;
-  }
-  
-  .nav-tabs {
-    flex-direction: column;
-  }
-  
-  .nav-tabs button {
-    width: 100%;
-    text-align: center;
-  }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  border-color: var(--color-primary-gold);
+  box-shadow: var(--focus-ring);
 }

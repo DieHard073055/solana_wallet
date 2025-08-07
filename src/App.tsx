@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import './design-system.css'
 import './App.css'
 import WalletManager from './components/WalletManager'
+import VaultIcon from './components/VaultIcon'
 import ConnectionManager from './components/ConnectionManager'
 import BalanceDisplay from './components/BalanceDisplay'
 import UnifiedTransfer from './components/UnifiedTransfer'
@@ -14,21 +16,14 @@ import { useBalance } from './hooks/useBalance'
 import { useTransactionHistory } from './hooks/useTransactionHistory'
 
 const quotes = [
-  "Banks had their turn. Now it's ours.",
-  "Your money. Your rules.",
   "No branches. No forms. No nonsense.",
+  "Our vault opens faster than their doors ever will.",
+  "Your money. Your rules. Your vault.",
+  "Banks had their turn. Now it's ours.",
   "Breaking chains, one transaction at a time.",
-  "Goodbye, banking pain. Hello, freedom.",
   "We don't ask permission to move your money.",
-  "Old finance is dead. Long live the chain.",
-  "Burn the forms. Break the queues. Take your money back.",
-  "The banks won't change. So we will.",
-  "From the islands, for the people — no permission needed.",
-  "Your account isn't theirs to control.",
   "Power to the wallet, not the banker.",
-  "Cash in your hands. Not in their cages.",
-  "If they block the door, we build our own vault.",
-  "Maldivians deserve more than waiting rooms."
+  "If they block the door, we build our own vault."
 ];
 
 function App() {
@@ -89,25 +84,10 @@ function App() {
   // Show loading screen
   if (authState.isLoading) {
     return (
-      <div style={{
-        display: 'flex',
-        alignItems: 'center', 
-        justifyContent: 'center',
-        minHeight: '100vh',
-        backgroundColor: '#1a1a1a',
-        color: '#fff'
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{
-            width: '50px',
-            height: '50px',
-            border: '3px solid #3a3a3a',
-            borderTop: '3px solid #007bff',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite',
-            margin: '0 auto 20px'
-          }}></div>
-          <p>Loading wallet...</p>
+      <div className="flex items-center justify-center" style={{ minHeight: '100vh', backgroundColor: 'var(--color-background)' }}>
+        <div className="text-center">
+          <div className="spinner" style={{ margin: '0 auto var(--spacing-8)' }}></div>
+          <p className="text-secondary">Unlocking vault...</p>
         </div>
       </div>
     );
@@ -154,87 +134,54 @@ function App() {
   // Show wallet creation options if PIN is unlocked but no wallet exists
   if (!authState.hasWallet && !authState.needsAuth && !authState.needsPinSetup) {
     return (
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
+      <div className="flex flex-col items-center justify-center" style={{ 
         minHeight: '100vh',
-        backgroundColor: '#1a1a1a',
-        color: '#fff',
-        padding: '20px'
+        backgroundColor: 'var(--color-background)',
+        padding: 'var(--spacing-8)'
       }}>
-        <div style={{
-          backgroundColor: '#242424',
-          padding: '40px',
-          borderRadius: '12px',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-          textAlign: 'center',
-          maxWidth: '400px',
-          width: '100%'
-        }}>
-          <h2 style={{ marginBottom: '20px', color: '#007bff' }}>
-            Welcome to Solana Wallet
-          </h2>
-          <p style={{ color: '#b0b0b0', marginBottom: '30px' }}>
-            Your PIN is set up! Now create or import a wallet to get started.
-          </p>
-          
-          <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button
-              onClick={() => setWalletCreationMode('create')}
-              style={{
-                padding: '15px 25px',
-                backgroundColor: '#28a745',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontSize: '16px',
-                fontWeight: 'bold'
-              }}
-            >
-              Create New Wallet
-            </button>
-            <button
-              onClick={() => setWalletCreationMode('import')}
-              style={{
-                padding: '15px 25px',
-                backgroundColor: '#6c757d',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontSize: '16px'
-              }}
-            >
-              Import Wallet
-            </button>
-          </div>
+        <div className="card text-center" style={{ maxWidth: '400px', width: '100%' }}>
+          <div className="card-body">
+            <div className="flex items-center justify-center mb-8">
+              <VaultIcon size={48} className="text-gold" unlocking />
+            </div>
+            <h2 className="text-2xl font-semibold text-gold mb-8">
+              Welcome to Thijoori
+            </h2>
+            <p className="text-secondary mb-12">
+              Your vault is ready! Create or import a wallet to secure your assets.
+            </p>
+            
+            <div className="flex gap-8 justify-center" style={{ flexWrap: 'wrap' }}>
+              <button
+                className="btn btn-primary btn-lg"
+                onClick={() => setWalletCreationMode('create')}
+              >
+                Create New Wallet
+              </button>
+              <button
+                className="btn btn-secondary btn-lg"
+                onClick={() => setWalletCreationMode('import')}
+              >
+                Import Wallet
+              </button>
+            </div>
 
-          <div style={{
-            marginTop: '30px',
-            borderTop: '1px solid #555',
-            paddingTop: '20px'
-          }}>
-            <button
-              onClick={() => {
-                if (confirm('This will reset your PIN and all data. Are you sure?')) {
-                  resetAll();
-                }
-              }}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: '#dc3545',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '12px'
-              }}
-            >
-              Reset All Data
-            </button>
+            <div style={{
+              marginTop: 'var(--spacing-16)',
+              borderTop: '1px solid var(--color-divider)',
+              paddingTop: 'var(--spacing-8)'
+            }}>
+              <button
+                className="btn btn-danger btn-sm"
+                onClick={() => {
+                  if (confirm('This will reset your PIN and all data. Are you sure?')) {
+                    resetAll();
+                  }
+                }}
+              >
+                Reset All Data
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -244,91 +191,53 @@ function App() {
   return (
     <div style={{ 
       minHeight: '100vh', 
-      backgroundColor: '#1a1a1a',
-      fontFamily: 'Arial, sans-serif'
+      backgroundColor: 'var(--color-background)'
     }}>
-      <div style={{ 
-        maxWidth: '1200px', 
-        margin: '0 auto', 
-        padding: '20px',
-        backgroundColor: '#242424',
+      <div className="container" style={{ 
+        backgroundColor: 'var(--color-surface)',
         minHeight: '100vh',
-        boxShadow: '0 0 10px rgba(0,0,0,0.3)'
+        boxShadow: 'var(--shadow-medium)'
       }}>
-        <header style={{ 
-          textAlign: 'center', 
-          marginBottom: '30px',
-          borderBottom: '2px solid #007bff',
-          paddingBottom: '20px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
+        <header className="flex justify-between items-center" style={{ 
+          padding: 'var(--spacing-20) 0',
+          borderBottom: '2px solid var(--color-primary-gold)',
+          marginBottom: 'var(--spacing-16)'
         }}>
-          <div style={{ flex: 1 }}>
-            <h1 style={{ 
-              color: '#007bff', 
-              margin: '0',
-              fontSize: '2.5rem',
-              fontWeight: 'bold'
-            }}>
-              Solana Wallet
-            </h1>
-            <p style={{ 
-              color: '#b0b0b0', 
-              margin: '10px 0 0 0',
-              fontSize: '1.1rem'
-            }}>
-              Manage your SOL and SPL tokens
-            </p>
+          <div className="flex items-center gap-8" style={{ flex: 1 }}>
+            <VaultIcon size={40} className="text-gold" />
+            <div>
+              <h1 className="text-4xl font-bold text-gold" style={{ margin: 0 }}>
+                Thijoori
+              </h1>
+              <p className="text-secondary text-lg" style={{ margin: 'var(--spacing-2) 0 0 0' }}>
+                Your digital vault for Solana assets
+              </p>
+            </div>
           </div>
           <button
+            className="btn btn-danger btn-sm"
             onClick={lockWallet}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#dc3545',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '14px'
-            }}
           >
             🔒 Lock
           </button>
         </header>
 
-        <nav style={{ 
-          marginBottom: '20px',
-          borderBottom: '1px solid #555'
-        }}>
-          <div style={{ display: 'flex', gap: '0', overflowX: 'auto' }}>
-            {[
-              { id: 'overview', label: 'Overview' },
-              { id: 'send', label: 'Send' },
-              { id: 'history', label: 'History' },
-              { id: 'wallet', label: 'Wallet' },
-              { id: 'network', label: 'Network' }
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                style={{
-                  padding: '12px 24px',
-                  border: 'none',
-                  backgroundColor: activeTab === tab.id ? '#007bff' : 'transparent',
-                  color: activeTab === tab.id ? 'white' : '#b0b0b0',
-                  cursor: 'pointer',
-                  borderBottom: activeTab === tab.id ? '3px solid #007bff' : '3px solid transparent',
-                  fontSize: '16px',
-                  fontWeight: activeTab === tab.id ? 'bold' : 'normal',
-                  transition: 'all 0.3s ease',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+        <nav className="nav-tabs" style={{ marginBottom: 'var(--spacing-8)' }}>
+          {[
+            { id: 'overview', label: 'Overview' },
+            { id: 'send', label: 'Send' },
+            { id: 'history', label: 'History' },
+            { id: 'wallet', label: 'Wallet' },
+            { id: 'network', label: 'Network' }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              className={`nav-tab ${activeTab === tab.id ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab.id as any)}
+            >
+              {tab.label}
+            </button>
+          ))}
         </nav>
 
         <div style={{ minHeight: '500px' }}>
@@ -366,57 +275,41 @@ function App() {
 
           {(activeTab === 'overview' || activeTab === 'send' || activeTab === 'history') && 
            (!wallet.isConnected || !connectionState.isConnected) && (
-            <div style={{ 
-              padding: '40px', 
-              textAlign: 'center',
-              backgroundColor: '#3a3a3a',
-              borderRadius: '8px',
-              border: '1px solid #555'
-            }}>
-              <h3 style={{ color: '#b0b0b0', marginBottom: '15px' }}>
-                {!wallet.isConnected ? 'Wallet Not Connected' : 'Network Not Connected'}
-              </h3>
-              <p style={{ color: '#b0b0b0', marginBottom: '20px' }}>
-                {!wallet.isConnected 
-                  ? 'Go to the Wallet tab to manage your wallet'
-                  : 'Go to the Network tab to configure your connection'
-                }
-              </p>
-              <button
-                onClick={() => setActiveTab(!wallet.isConnected ? 'wallet' : 'network')}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: '#007bff',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer'
-                }}
-              >
-                Go to {!wallet.isConnected ? 'Wallet' : 'Network'} Tab
-              </button>
+            <div className="card card-alt text-center">
+              <div className="card-body">
+                <VaultIcon size={32} className="text-muted mb-8" />
+                <h3 className="text-xl text-secondary mb-8">
+                  {!wallet.isConnected ? 'Vault Not Connected' : 'Network Not Connected'}
+                </h3>
+                <p className="text-secondary mb-12">
+                  {!wallet.isConnected 
+                    ? 'Go to the Wallet tab to manage your vault'
+                    : 'Go to the Network tab to configure your connection'
+                  }
+                </p>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setActiveTab(!wallet.isConnected ? 'wallet' : 'network')}
+                >
+                  Go to {!wallet.isConnected ? 'Wallet' : 'Network'} Tab
+                </button>
+              </div>
             </div>
           )}
         </div>
 
-        <footer style={{ 
-          marginTop: '40px',
-          paddingTop: '20px',
-          borderTop: '1px solid #dee2e6',
-          textAlign: 'center',
-          color: '#6c757d',
-          fontSize: '14px'
+        <footer className="text-center" style={{ 
+          marginTop: 'var(--spacing-20)',
+          paddingTop: 'var(--spacing-8)',
+          borderTop: '1px solid var(--color-divider)'
         }}>
-          <p style={{ 
-            marginTop: '0px',
-            marginBottom: '15px',
-            fontSize: '16px',
+          <p className="text-gold text-lg" style={{ 
             fontStyle: 'italic',
-            color: '#007bff'
+            marginBottom: 'var(--spacing-8)'
           }}>
             "{currentQuote}"
           </p>
-          <p style={{ marginTop: '10px' }}>
+          <p className="text-muted text-sm">
             Built with React, TypeScript, and @solana/web3.js
           </p>
         </footer>

@@ -7,6 +7,7 @@ import { getTokenMetadata } from '../utils/tokenMetadata';
 export const useBalance = (connection: Connection | null, publicKey: string | null) => {
   const [solBalance, setSolBalance] = useState<number>(0);
   const [tokenBalances, setTokenBalances] = useState<TokenBalance[]>([]);
+  const [allTokens, setAllTokens] = useState<TokenBalance[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
 
@@ -17,14 +18,16 @@ export const useBalance = (connection: Connection | null, publicKey: string | nu
       const pubKey = new PublicKey(publicKey);
       const balance = await connection.getBalance(pubKey);
       setSolBalance(balance / LAMPORTS_PER_SOL);
+      return balance / LAMPORTS_PER_SOL;
     } catch (err: any) {
       console.error('Error fetching SOL balance:', err);
       setError('Failed to fetch SOL balance');
+      return 0;
     }
   };
 
   const fetchTokenBalances = async () => {
-    if (!connection || !publicKey) return;
+    if (!connection || !publicKey) return [];
 
     try {
       const pubKey = new PublicKey(publicKey);
@@ -57,10 +60,31 @@ export const useBalance = (connection: Connection | null, publicKey: string | nu
       );
 
       setTokenBalances(balances);
+      return balances;
     } catch (err: any) {
       console.error('Error fetching token balances:', err);
       setError('Failed to fetch token balances');
+      return [];
     }
+  };
+
+  const createUnifiedTokenList = async (solBal: number, splTokens: TokenBalance[]) => {
+    // Create SOL token entry using metadata from the registry
+    const solMetadata = await getTokenMetadata('11111111111111111111111111111112');
+    
+    const solToken: TokenBalance = {
+      mint: '11111111111111111111111111111112', // System program ID (represents SOL)
+      balance: solBal * LAMPORTS_PER_SOL, // Convert back to lamports for consistency
+      decimals: 9,
+      symbol: solMetadata?.symbol || 'SOL',
+      name: solMetadata?.name || 'Solana',
+      logoURI: solMetadata?.logoURI
+    };
+
+    // Combine SOL and SPL tokens, with SOL first
+    const allTokensList = [solToken, ...splTokens];
+    setAllTokens(allTokensList);
+    return allTokensList;
   };
 
   const refreshBalances = async () => {
@@ -70,10 +94,12 @@ export const useBalance = (connection: Connection | null, publicKey: string | nu
     setError('');
     
     try {
-      await Promise.all([
+      const [solBal, splTokens] = await Promise.all([
         fetchSOLBalance(),
         fetchTokenBalances(),
       ]);
+      
+      await createUnifiedTokenList(solBal || 0, splTokens || []);
     } catch (err: any) {
       setError('Failed to refresh balances');
     } finally {
@@ -87,12 +113,14 @@ export const useBalance = (connection: Connection | null, publicKey: string | nu
     } else {
       setSolBalance(0);
       setTokenBalances([]);
+      setAllTokens([]);
     }
   }, [connection, publicKey]);
 
   return {
     solBalance,
     tokenBalances,
+    allTokens,
     isLoading,
     error,
     refreshBalances,

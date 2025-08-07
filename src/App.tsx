@@ -3,8 +3,7 @@ import './App.css'
 import WalletManager from './components/WalletManager'
 import ConnectionManager from './components/ConnectionManager'
 import BalanceDisplay from './components/BalanceDisplay'
-import SOLTransfer from './components/SOLTransfer'
-import SPLTransfer from './components/SPLTransfer'
+import UnifiedTransfer from './components/UnifiedTransfer'
 import TransactionHistory from './components/TransactionHistory'
 import PinAuth from './components/PinAuth'
 import PinSetup from './components/PinSetup'
@@ -26,7 +25,7 @@ function App() {
     resetAll
   } = useWallet();
   const { connection, connectionState } = useConnection();
-  const { tokenBalances } = useBalance(connection, wallet.publicKey);
+  const { allTokens } = useBalance(connection, wallet.publicKey);
   const { addRecentTransaction } = useTransactionHistory(connection, wallet.publicKey);
   const [activeTab, setActiveTab] = useState<'overview' | 'send' | 'history' | 'wallet' | 'network'>('overview');
   const [walletCreationMode, setWalletCreationMode] = useState<'create' | 'import' | null>(null);
@@ -314,21 +313,11 @@ function App() {
           )}
 
           {activeTab === 'send' && wallet.isConnected && connectionState.isConnected && (
-            <div style={{ 
-              display: 'grid', 
-              gap: '20px',
-              gridTemplateColumns: window.innerWidth > 768 ? '1fr 1fr' : '1fr'
-            }}>
-              <SOLTransfer 
-                connection={connection}
-                onTransactionComplete={handleTransactionComplete}
-              />
-              <SPLTransfer 
-                connection={connection}
-                tokenBalances={tokenBalances}
-                onTransactionComplete={handleTransactionComplete}
-              />
-            </div>
+            <UnifiedTransfer 
+              connection={connection}
+              allTokens={allTokens}
+              onTransactionComplete={handleTransactionComplete}
+            />
           )}
 
           {activeTab === 'history' && wallet.isConnected && connectionState.isConnected && (

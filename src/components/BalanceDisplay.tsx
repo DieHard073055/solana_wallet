@@ -11,8 +11,17 @@ interface BalanceDisplayProps {
 }
 
 const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ connection, publicKey, isConnected }) => {
-  const { solBalance, tokenBalances, isLoading, error, refreshBalances } = useBalance(connection, publicKey);
+  const { solBalance, tokenBalances, allTokens, isLoading, error, refreshBalances } = useBalance(connection, publicKey);
   const [showQRCode, setShowQRCode] = useState(false);
+
+  const formatBalance = (token: any) => {
+    // For SOL (native token), display as SOL units
+    if (token.mint === '11111111111111111111111111111112') {
+      return (token.balance / 1000000000).toFixed(9) + ' ' + (token.symbol || 'SOL');
+    }
+    // For SPL tokens, use existing formatting
+    return formatTokenAmount(token.balance, token.decimals);
+  };
 
   if (!isConnected || !publicKey) {
     return (
@@ -112,24 +121,9 @@ const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ connection, publicKey, 
         </div>
       )}
 
-      <div style={{ marginBottom: '25px' }}>
-        <h4>SOL Balance</h4>
-        <div style={{ 
-          padding: '15px', 
-          backgroundColor: '#3a3a3a', 
-          border: '1px solid #555', 
-          borderRadius: '4px',
-          fontSize: '18px',
-          fontWeight: 'bold',
-          color: '#fff'
-        }}>
-          {solBalance.toFixed(9)} SOL
-        </div>
-      </div>
-
       <div>
-        <h4>SPL Token Balances</h4>
-        {tokenBalances.length === 0 ? (
+        <h4>Token Balances</h4>
+        {allTokens.length === 0 ? (
           <div style={{ 
             padding: '15px', 
             backgroundColor: '#3a3a3a', 
@@ -138,21 +132,21 @@ const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ connection, publicKey, 
             color: '#b0b0b0',
             textAlign: 'center'
           }}>
-            No SPL tokens found
+            No tokens found
           </div>
         ) : (
           <div style={{ 
-            maxHeight: '300px', 
+            maxHeight: '400px', 
             overflowY: 'auto',
             border: '1px solid #555',
             borderRadius: '4px'
           }}>
-            {tokenBalances.map((token, index) => (
+            {allTokens.map((token, index) => (
               <div 
                 key={token.mint} 
                 style={{ 
                   padding: '15px', 
-                  borderBottom: index < tokenBalances.length - 1 ? '1px solid #555' : 'none',
+                  borderBottom: index < allTokens.length - 1 ? '1px solid #555' : 'none',
                   backgroundColor: index % 2 === 0 ? '#3a3a3a' : '#2a2a2a',
                   color: '#fff',
                   display: 'flex',
@@ -190,7 +184,7 @@ const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ connection, publicKey, 
                     )}
                   </div>
                   <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#4CAF50' }}>
-                    {formatTokenAmount(token.balance, token.decimals)}
+                    {formatBalance(token)}
                   </div>
                   <div style={{ fontSize: '12px', color: '#b0b0b0', marginTop: '4px' }}>
                     <strong>Mint:</strong> {shortenAddress(token.mint)}

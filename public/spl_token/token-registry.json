@@ -15,8 +15,23 @@
   "logoURI": "https://s2.coinmarketcap.com/static/img/coins/128x128/825.png",
   "tokens": [
     {
+      "address": "11111111111111111111111111111112",
+      "name": "Solana",
+      "symbol": "SOL",
+      "decimals": 9,
+      "website": "https://solana.com",
+      "socials": {
+        "twitter": "https://x.com/solana"
+      },
+      "description": "Solana is a high-performance blockchain supporting builders around the world creating crypto apps that scale today.",
+      "tags": [
+        "native",
+        "primary"
+      ]
+    },
+    {
       "address": "2Cwgq9BJChdETvhobS4rrJGhFgT6Ls5cGvHvgqYhxJWo",
-      "name": "United States Dollar Tether",
+      "name": "USDT",
       "symbol": "USDT",
       "decimals": 9,
       "website": "https://tether.to",

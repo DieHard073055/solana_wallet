@@ -13,38 +13,52 @@ const PinSetup: React.FC<PinSetupProps> = ({
 }) => {
   const [pin, setPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
+  const [step, setStep] = useState<'enter' | 'confirm'>('enter');
 
-  const handleDigitClick = (digit: string, target: 'pin' | 'confirm') => {
-    if (target === 'pin' && pin.length < 4) {
+  const handleDigitClick = (digit: string) => {
+    if (step === 'enter' && pin.length < 4) {
       setPin(pin + digit);
-    } else if (target === 'confirm' && confirmPin.length < 4) {
+    } else if (step === 'confirm' && confirmPin.length < 4) {
       setConfirmPin(confirmPin + digit);
     }
   };
 
-  const handleBackspace = (target: 'pin' | 'confirm') => {
-    if (target === 'pin') {
+  const handleBackspace = () => {
+    if (step === 'enter') {
       setPin(pin.slice(0, -1));
     } else {
       setConfirmPin(confirmPin.slice(0, -1));
     }
   };
 
-  const handleClear = (target: 'pin' | 'confirm') => {
-    if (target === 'pin') {
+  const handleClear = () => {
+    if (step === 'enter') {
       setPin('');
     } else {
       setConfirmPin('');
     }
   };
 
+  const handleNext = () => {
+    if (step === 'enter' && pin.length === 4) {
+      setStep('confirm');
+    }
+  };
+
+  const handleBack = () => {
+    if (step === 'confirm') {
+      setStep('enter');
+      setConfirmPin('');
+    }
+  };
+
   const handleSubmit = async () => {
-    if (pin.length === 4 && confirmPin.length === 4 && pin === confirmPin) {
+    if (step === 'confirm' && pin.length === 4 && confirmPin.length === 4 && pin === confirmPin) {
       await onPinSetup(pin);
     }
   };
 
-  const renderPinInput = (value: string, target: 'pin' | 'confirm', label: string) => (
+  const renderPinInput = (value: string, label: string) => (
     <div style={{ marginBottom: '30px' }}>
       <h4 style={{ color: '#b0b0b0', marginBottom: '15px', textAlign: 'center' }}>
         {label}
@@ -84,7 +98,7 @@ const PinSetup: React.FC<PinSetupProps> = ({
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((digit) => (
           <button
             key={digit}
-            onClick={() => handleDigitClick(digit.toString(), target)}
+            onClick={() => handleDigitClick(digit.toString())}
             style={{
               width: '60px',
               height: '60px',
@@ -114,7 +128,7 @@ const PinSetup: React.FC<PinSetupProps> = ({
         gap: '15px'
       }}>
         <button
-          onClick={() => handleClear(target)}
+          onClick={handleClear}
           style={{
             width: '60px',
             height: '60px',
@@ -129,7 +143,7 @@ const PinSetup: React.FC<PinSetupProps> = ({
           C
         </button>
         <button
-          onClick={() => handleDigitClick('0', target)}
+          onClick={() => handleDigitClick('0')}
           style={{
             width: '60px',
             height: '60px',
@@ -152,7 +166,7 @@ const PinSetup: React.FC<PinSetupProps> = ({
           0
         </button>
         <button
-          onClick={() => handleBackspace(target)}
+          onClick={handleBackspace}
           style={{
             width: '60px',
             height: '60px',
@@ -195,11 +209,14 @@ const PinSetup: React.FC<PinSetupProps> = ({
         </h2>
         
         <p style={{ color: '#b0b0b0', marginBottom: '30px', fontSize: '14px' }}>
-          Create a 4-digit PIN to secure your wallet. This PIN will be used to encrypt all your wallets.
+          {step === 'enter' 
+            ? 'Create a 4-digit PIN to secure your wallet. This PIN will be used to encrypt all your wallets.'
+            : 'Please confirm your PIN by entering it again.'
+          }
         </p>
 
-        {renderPinInput(pin, 'pin', 'Enter 4-digit PIN')}
-        {renderPinInput(confirmPin, 'confirm', 'Confirm PIN')}
+        {step === 'enter' && renderPinInput(pin, 'Enter 4-digit PIN')}
+        {step === 'confirm' && renderPinInput(confirmPin, 'Confirm PIN')}
 
         {error && (
           <div style={{
@@ -213,7 +230,7 @@ const PinSetup: React.FC<PinSetupProps> = ({
           </div>
         )}
 
-        {pin !== confirmPin && confirmPin.length === 4 && (
+        {step === 'confirm' && pin !== confirmPin && confirmPin.length === 4 && (
           <div style={{
             backgroundColor: '#dc3545',
             color: '#fff',
@@ -225,33 +242,72 @@ const PinSetup: React.FC<PinSetupProps> = ({
           </div>
         )}
 
-        <button
-          onClick={handleSubmit}
-          disabled={
-            isLoading ||
-            pin.length !== 4 ||
-            confirmPin.length !== 4 ||
-            pin !== confirmPin
-          }
-          style={{
-            padding: '15px 30px',
-            backgroundColor: isLoading ? '#6c757d' : '#007bff',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: isLoading ? 'not-allowed' : 'pointer',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            opacity: (
-              pin.length !== 4 ||
-              confirmPin.length !== 4 ||
-              pin !== confirmPin
-            ) ? 0.5 : 1,
-            transition: 'all 0.2s ease'
-          }}
-        >
-          {isLoading ? 'Setting up...' : 'Set PIN'}
-        </button>
+        <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
+          {step === 'confirm' && (
+            <button
+              onClick={handleBack}
+              style={{
+                padding: '15px 30px',
+                backgroundColor: '#6c757d',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '16px',
+                fontWeight: 'bold'
+              }}
+            >
+              Back
+            </button>
+          )}
+          
+          {step === 'enter' ? (
+            <button
+              onClick={handleNext}
+              disabled={pin.length !== 4}
+              style={{
+                padding: '15px 30px',
+                backgroundColor: pin.length !== 4 ? '#6c757d' : '#007bff',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: pin.length !== 4 ? 'not-allowed' : 'pointer',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                opacity: pin.length !== 4 ? 0.5 : 1,
+                transition: 'all 0.2s ease'
+              }}
+            >
+              Next
+            </button>
+          ) : (
+            <button
+              onClick={handleSubmit}
+              disabled={
+                isLoading ||
+                confirmPin.length !== 4 ||
+                pin !== confirmPin
+              }
+              style={{
+                padding: '15px 30px',
+                backgroundColor: isLoading ? '#6c757d' : '#007bff',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: isLoading ? 'not-allowed' : 'pointer',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                opacity: (
+                  confirmPin.length !== 4 ||
+                  pin !== confirmPin
+                ) ? 0.5 : 1,
+                transition: 'all 0.2s ease'
+              }}
+            >
+              {isLoading ? 'Setting up...' : 'Set PIN'}
+            </button>
+          )}
+        </div>
 
         <div style={{
           marginTop: '20px',

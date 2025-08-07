@@ -4,6 +4,7 @@ import { TOKEN_PROGRAM_ID, createTransferInstruction, getAssociatedTokenAddress,
 import { isValidSolanaAddress, isValidAmount } from '../utils/validation';
 import { useWallet } from '../hooks/useWallet';
 import { TokenBalance } from '../types/wallet';
+import QRCodeScanner from './QRCodeScanner';
 
 interface SPLTransferProps {
   connection: Connection | null;
@@ -21,6 +22,7 @@ const SPLTransfer: React.FC<SPLTransferProps> = ({ connection, tokenBalances, on
   const [isTransacting, setIsTransacting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showScanner, setShowScanner] = useState(false);
 
   const validateForm = (): boolean => {
     if (!recipient.trim()) {
@@ -65,6 +67,16 @@ const SPLTransfer: React.FC<SPLTransferProps> = ({ connection, tokenBalances, on
     }
 
     return true;
+  };
+
+  const handleQRScan = (scannedAddress: string) => {
+    setRecipient(scannedAddress);
+    setShowScanner(false);
+    setError('');
+  };
+
+  const handleScanError = (error: string) => {
+    setError(`QR Scan Error: ${error}`);
   };
 
   const handleTransfer = async () => {
@@ -239,19 +251,47 @@ const SPLTransfer: React.FC<SPLTransferProps> = ({ connection, tokenBalances, on
           <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
             Recipient Address:
           </label>
-          <input
-            type="text"
-            value={recipient}
-            onChange={(e) => setRecipient(e.target.value)}
-            placeholder="Enter recipient's Solana address"
-            style={{ 
-              width: '100%', 
-              padding: '10px',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              fontSize: '14px'
-            }}
-          />
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <input
+              type="text"
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
+              placeholder="Enter recipient's Solana address"
+              style={{ 
+                flex: 1, 
+                padding: '10px',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                fontSize: '14px'
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowScanner(!showScanner)}
+              style={{
+                padding: '10px 15px',
+                backgroundColor: showScanner ? '#dc3545' : '#28a745',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              {showScanner ? '✕ Close' : '📷 Scan QR'}
+            </button>
+          </div>
+          
+          {showScanner && (
+            <div style={{ marginTop: '15px' }}>
+              <QRCodeScanner
+                isActive={showScanner}
+                onScan={handleQRScan}
+                onError={handleScanError}
+              />
+            </div>
+          )}
         </div>
 
         <div style={{ marginBottom: '15px' }}>

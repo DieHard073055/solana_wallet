@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useBalance } from '../hooks/useBalance';
 import { Connection } from '@solana/web3.js';
 import { formatTokenAmount, shortenAddress } from '../utils/validation';
+import QRCodeGenerator from './QRCodeGenerator';
 
 interface BalanceDisplayProps {
   connection: Connection | null;
@@ -11,6 +12,7 @@ interface BalanceDisplayProps {
 
 const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ connection, publicKey, isConnected }) => {
   const { solBalance, tokenBalances, isLoading, error, refreshBalances } = useBalance(connection, publicKey);
+  const [showQRCode, setShowQRCode] = useState(false);
 
   if (!isConnected || !publicKey) {
     return (
@@ -25,20 +27,35 @@ const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ connection, publicKey, 
     <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px', margin: '10px 0' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h3>Account Balance</h3>
-        <button 
-          onClick={refreshBalances}
-          disabled={isLoading}
-          style={{ 
-            padding: '8px 16px',
-            backgroundColor: isLoading ? '#6c757d' : '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: isLoading ? 'not-allowed' : 'pointer'
-          }}
-        >
-          {isLoading ? 'Refreshing...' : 'Refresh'}
-        </button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button 
+            onClick={() => setShowQRCode(!showQRCode)}
+            style={{ 
+              padding: '8px 16px',
+              backgroundColor: showQRCode ? '#28a745' : '#6f42c1',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            {showQRCode ? 'Hide QR' : 'Show QR'}
+          </button>
+          <button 
+            onClick={refreshBalances}
+            disabled={isLoading}
+            style={{ 
+              padding: '8px 16px',
+              backgroundColor: isLoading ? '#6c757d' : '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: isLoading ? 'not-allowed' : 'pointer'
+            }}
+          >
+            {isLoading ? 'Refreshing...' : 'Refresh'}
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -51,6 +68,47 @@ const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ connection, publicKey, 
           marginBottom: '15px'
         }}>
           {error}
+        </div>
+      )}
+
+      {showQRCode && publicKey && (
+        <div style={{ 
+          textAlign: 'center', 
+          marginBottom: '25px',
+          padding: '20px',
+          backgroundColor: '#f8f9fa',
+          border: '1px solid #dee2e6',
+          borderRadius: '8px'
+        }}>
+          <h4 style={{ marginBottom: '15px', color: '#333' }}>Your Wallet Address</h4>
+          <QRCodeGenerator value={publicKey} size={200} />
+          <div style={{ 
+            marginTop: '15px',
+            padding: '10px',
+            backgroundColor: '#e9ecef',
+            borderRadius: '4px',
+            wordBreak: 'break-all',
+            fontSize: '12px',
+            color: '#495057',
+            fontFamily: 'monospace'
+          }}>
+            {publicKey}
+          </div>
+          <button
+            onClick={() => navigator.clipboard.writeText(publicKey)}
+            style={{
+              marginTop: '10px',
+              padding: '6px 12px',
+              backgroundColor: '#17a2b8',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '12px'
+            }}
+          >
+            Copy Address
+          </button>
         </div>
       )}
 

@@ -15,8 +15,11 @@
   "dependencies": {
     "@solana/spl-token": "^0.4.13",
     "@solana/web3.js": "^1.98.4",
+    "@types/qrcode": "^1.5.5",
     "buffer": "^6.0.3",
     "gh-pages": "^6.3.0",
+    "qr-scanner": "^1.4.2",
+    "qrcode": "^1.5.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },

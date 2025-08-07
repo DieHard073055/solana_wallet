@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
 import WalletManager from './components/WalletManager'
 import ConnectionManager from './components/ConnectionManager'
@@ -12,6 +12,24 @@ import { useWallet } from './hooks/useWallet'
 import { useConnection } from './hooks/useConnection'
 import { useBalance } from './hooks/useBalance'
 import { useTransactionHistory } from './hooks/useTransactionHistory'
+
+const quotes = [
+  "Banks had their turn. Now it's ours.",
+  "Your money. Your rules.",
+  "No branches. No forms. No nonsense.",
+  "Breaking chains, one transaction at a time.",
+  "Goodbye, banking pain. Hello, freedom.",
+  "We don't ask permission to move your money.",
+  "Old finance is dead. Long live the chain.",
+  "Burn the forms. Break the queues. Take your money back.",
+  "The banks won't change. So we will.",
+  "From the islands, for the people — no permission needed.",
+  "Your account isn't theirs to control.",
+  "Power to the wallet, not the banker.",
+  "Cash in your hands. Not in their cages.",
+  "If they block the door, we build our own vault.",
+  "Maldivians deserve more than waiting rooms."
+];
 
 function App() {
   const { 
@@ -29,6 +47,16 @@ function App() {
   const { addRecentTransaction } = useTransactionHistory(connection, wallet.publicKey);
   const [activeTab, setActiveTab] = useState<'overview' | 'send' | 'history' | 'wallet' | 'network'>('overview');
   const [walletCreationMode, setWalletCreationMode] = useState<'create' | 'import' | null>(null);
+  const [currentQuote, setCurrentQuote] = useState('');
+
+  useEffect(() => {
+    const getRandomQuote = () => {
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      return quotes[randomIndex];
+    };
+
+    setCurrentQuote(getRandomQuote());
+  }, []);
 
   const handleTransactionComplete = (signature: string) => {
     addRecentTransaction(signature);
@@ -379,7 +407,15 @@ function App() {
           color: '#6c757d',
           fontSize: '14px'
         }}>
-          <p>⚠️ This is a demo wallet. Never use real funds on untrusted applications.</p>
+          <p style={{ 
+            marginTop: '0px',
+            marginBottom: '15px',
+            fontSize: '16px',
+            fontStyle: 'italic',
+            color: '#007bff'
+          }}>
+            "{currentQuote}"
+          </p>
           <p style={{ marginTop: '10px' }}>
             Built with React, TypeScript, and @solana/web3.js
           </p>

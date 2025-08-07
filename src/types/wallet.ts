@@ -11,6 +11,8 @@ export interface TokenBalance {
   balance: number;
   decimals: number;
   symbol?: string;
+  name?: string;
+  logoURI?: string;
 }
 
 export interface TransactionRecord {

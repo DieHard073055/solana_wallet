@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID, AccountLayout } from '@solana/spl-token';
 import { TokenBalance } from '../types/wallet';
+import { getTokenMetadata } from '../utils/tokenMetadata';
 
 export const useBalance = (connection: Connection | null, publicKey: string | null) => {
   const [solBalance, setSolBalance] = useState<number>(0);
@@ -32,14 +33,28 @@ export const useBalance = (connection: Connection | null, publicKey: string | nu
         programId: TOKEN_PROGRAM_ID,
       });
 
-      const balances: TokenBalance[] = tokenAccounts.value.map((accountInfo) => {
-        const data = accountInfo.account.data.parsed.info;
-        return {
-          mint: data.mint,
-          balance: parseFloat(data.tokenAmount.amount),
-          decimals: data.tokenAmount.decimals,
-        };
-      }).filter(balance => balance.balance > 0);
+      const balances: TokenBalance[] = await Promise.all(
+        tokenAccounts.value
+          .map((accountInfo) => {
+            const data = accountInfo.account.data.parsed.info;
+            return {
+              mint: data.mint,
+              balance: parseFloat(data.tokenAmount.amount),
+              decimals: data.tokenAmount.decimals,
+            };
+          })
+          .filter(balance => balance.balance > 0)
+          .map(async (balance) => {
+            // Fetch metadata for each token
+            const metadata = await getTokenMetadata(balance.mint);
+            return {
+              ...balance,
+              symbol: metadata?.symbol,
+              name: metadata?.name,
+              logoURI: metadata?.logoURI,
+            };
+          })
+      );
 
       setTokenBalances(balances);
     } catch (err: any) {

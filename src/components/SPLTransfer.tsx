@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Connection, PublicKey, Transaction, sendAndConfirmTransaction } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID, createTransferInstruction, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction } from '@solana/spl-token';
-import { isValidSolanaAddress, isValidAmount } from '../utils/validation';
+import { isValidSolanaAddress, isValidAmount, shortenAddress } from '../utils/validation';
 import { useWallet } from '../hooks/useWallet';
 import { TokenBalance } from '../types/wallet';
 import QRCodeScanner from './QRCodeScanner';
@@ -235,7 +235,7 @@ const SPLTransfer: React.FC<SPLTransferProps> = ({ connection, tokenBalances, on
               <option value="">Select a token...</option>
               {tokenBalances.map((token) => (
                 <option key={token.mint} value={token.mint}>
-                  {token.mint} (Balance: {(token.balance / Math.pow(10, token.decimals)).toFixed(token.decimals)})
+                  {token.name || token.symbol || shortenAddress(token.mint)} (Balance: {(token.balance / Math.pow(10, token.decimals)).toFixed(token.decimals)})
                 </option>
               ))}
             </select>

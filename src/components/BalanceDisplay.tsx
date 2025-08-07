@@ -154,31 +154,58 @@ const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ connection, publicKey, 
                   padding: '15px', 
                   borderBottom: index < tokenBalances.length - 1 ? '1px solid #555' : 'none',
                   backgroundColor: index % 2 === 0 ? '#3a3a3a' : '#2a2a2a',
-                  color: '#fff'
+                  color: '#fff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '15px'
                 }}
               >
-                <div style={{ marginBottom: '8px' }}>
-                  <strong>Mint:</strong> {shortenAddress(token.mint)}
-                  <span 
-                    style={{ 
-                      marginLeft: '10px', 
-                      fontSize: '12px', 
-                      color: '#b0b0b0',
-                      cursor: 'pointer',
-                      textDecoration: 'underline'
+                {token.logoURI && (
+                  <img 
+                    src={token.logoURI} 
+                    alt={token.name || token.symbol || 'Token'}
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      backgroundColor: '#555',
+                      border: '2px solid #666'
                     }}
-                    onClick={() => navigator.clipboard.writeText(token.mint)}
-                    title="Click to copy full address"
-                  >
-                    (copy full)
-                  </span>
-                </div>
-                <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
-                  {formatTokenAmount(token.balance, token.decimals)} 
-                  {token.symbol && ` ${token.symbol}`}
-                </div>
-                <div style={{ fontSize: '12px', color: '#b0b0b0' }}>
-                  Decimals: {token.decimals}
+                    onError={(e) => {
+                      // Hide image if it fails to load
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                )}
+                <div style={{ flex: 1 }}>
+                  <div style={{ marginBottom: '8px' }}>
+                    <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#fff' }}>
+                      {token.name || `Token ${shortenAddress(token.mint)}`}
+                    </div>
+                    {token.symbol && (
+                      <div style={{ fontSize: '14px', color: '#b0b0b0' }}>
+                        {token.symbol}
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#4CAF50' }}>
+                    {formatTokenAmount(token.balance, token.decimals)}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#b0b0b0', marginTop: '4px' }}>
+                    <strong>Mint:</strong> {shortenAddress(token.mint)}
+                    <span 
+                      style={{ 
+                        marginLeft: '10px', 
+                        cursor: 'pointer',
+                        textDecoration: 'underline'
+                      }}
+                      onClick={() => navigator.clipboard.writeText(token.mint)}
+                      title="Click to copy full address"
+                    >
+                      (copy)
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}

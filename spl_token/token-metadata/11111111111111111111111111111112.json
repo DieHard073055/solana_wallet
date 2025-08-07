@@ -1,0 +1,26 @@
+{
+  "name": "Solana",
+  "symbol": "SOL",
+  "description": "Solana is a high-performance blockchain supporting builders around the world creating crypto apps that scale today.",
+  "image": "https://s2.coinmarketcap.com/static/img/coins/128x128/5426.png",
+  "external_url": "https://solana.com",
+  "attributes": [
+    {
+      "trait_type": "Decimals",
+      "value": 9
+    },
+    {
+      "trait_type": "Type",
+      "value": "Native Token"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://s2.coinmarketcap.com/static/img/coins/128x128/5426.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "native"
+  }
+}

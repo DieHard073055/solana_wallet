@@ -210,7 +210,7 @@ function App() {
                 Thijoori
               </h1>
               <p className="text-secondary text-lg" style={{ margin: 'var(--spacing-2) 0 0 0' }}>
-                Your digital vault for Solana assets
+                Your assets. Your control. Always.
               </p>
             </div>
           </div>

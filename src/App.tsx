@@ -215,10 +215,15 @@ function App() {
             </div>
           </div>
           <button
-            className="btn btn-danger btn-sm"
+            className="btn btn-secondary btn-sm"
             onClick={lockWallet}
+            style={{
+              border: '1px solid var(--color-divider)',
+              color: 'var(--color-text-secondary)'
+            }}
           >
-            🔒 Lock
+            <VaultIcon size={16} className="text-secondary" />
+            Lock
           </button>
         </header>
 

@@ -112,24 +112,53 @@ const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ connection, publicKey, 
                     borderBottom: index < allTokens.length - 1 ? '1px solid var(--color-divider)' : 'none'
                   }}
                 >
-                  {token.logoURI && (
-                    <img 
-                      src={token.logoURI} 
-                      alt={token.name || token.symbol || 'Token'}
-                      style={{
-                        width: '40px',
-                        height: '40px',
-                        borderRadius: 'var(--radius-full)',
-                        objectFit: 'cover',
-                        backgroundColor: 'var(--color-surface)',
-                        border: '2px solid var(--color-divider)',
-                        boxShadow: 'var(--shadow-subtle)'
-                      }}
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-                  )}
+                  <div style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: 'var(--radius-full)',
+                    backgroundColor: 'var(--color-surface)',
+                    border: '2px solid var(--color-divider)',
+                    boxShadow: 'var(--shadow-subtle)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden'
+                  }}>
+                    {token.logoURI ? (
+                      <img 
+                        src={token.logoURI} 
+                        alt={token.name || token.symbol || 'Token'}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                        onError={(e) => {
+                          // Hide the image and show fallback text
+                          const img = e.currentTarget as HTMLImageElement;
+                          img.style.display = 'none';
+                          
+                          // Add fallback text to parent
+                          const parent = img.parentElement;
+                          if (parent && !parent.querySelector('.fallback-text')) {
+                            const fallback = document.createElement('div');
+                            fallback.className = 'fallback-text text-gold font-bold text-sm';
+                            fallback.textContent = token.mint === '11111111111111111111111111111112' 
+                              ? '◉' 
+                              : (token.symbol?.charAt(0) || '?');
+                            parent.appendChild(fallback);
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div className="text-gold font-bold text-sm">
+                        {token.mint === '11111111111111111111111111111112' 
+                          ? '◉' 
+                          : (token.symbol?.charAt(0) || '?')
+                        }
+                      </div>
+                    )}
+                  </div>
                   <div style={{ flex: 1 }}>
                     <div className="mb-4">
                       <div className="text-base font-semibold text-primary">

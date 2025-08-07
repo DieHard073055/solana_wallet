@@ -403,11 +403,18 @@ body {
   }
   
   .nav-tabs {
-    flex-direction: column;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+  
+  .nav-tabs::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
   }
   
   .nav-tab {
-    width: 100%;
+    min-width: max-content;
     text-align: center;
   }
   

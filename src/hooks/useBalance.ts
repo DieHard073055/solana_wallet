@@ -78,9 +78,9 @@ export const useBalance = (connection: Connection | null, publicKey: string | nu
       decimals: 9,
       symbol: solMetadata?.symbol || 'SOL',
       name: solMetadata?.name || 'Solana',
-      logoURI: solMetadata?.logoURI
+      logoURI: solMetadata?.logoURI || 'https://s2.coinmarketcap.com/static/img/coins/128x128/5426.png' // Fallback to direct URL
     };
-
+    
     // Combine SOL and SPL tokens, with SOL first
     const allTokensList = [solToken, ...splTokens];
     setAllTokens(allTokensList);

@@ -60,30 +60,25 @@ const PinSetup: React.FC<PinSetupProps> = ({
   };
 
   const renderPinInput = (value: string, label: string) => (
-    <div style={{ marginBottom: '30px' }}>
-      <h4 style={{ color: '#b0b0b0', marginBottom: '15px', textAlign: 'center' }}>
+    <div style={{ marginBottom: 'var(--spacing-12)' }}>
+      <h4 className="text-secondary" style={{ marginBottom: 'var(--spacing-8)', textAlign: 'center' }}>
         {label}
       </h4>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        gap: '10px',
-        marginBottom: '20px'
-      }}>
+      <div className="flex justify-center gap-4 mb-12">
         {[0, 1, 2, 3].map((index) => (
           <div
             key={index}
+            className="flex items-center justify-center"
             style={{
               width: '50px',
               height: '50px',
-              borderRadius: '50%',
-              backgroundColor: index < value.length ? '#007bff' : '#3a3a3a',
-              border: '2px solid #555',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              borderRadius: 'var(--radius-full)',
+              backgroundColor: index < value.length ? 'var(--color-primary-gold)' : 'var(--color-surface-alt)',
+              border: `2px solid ${index < value.length ? 'var(--color-primary-gold)' : 'var(--color-divider)'}`,
               fontSize: '24px',
-              color: '#fff'
+              color: index < value.length ? 'var(--color-background)' : 'var(--color-text-muted)',
+              transition: 'all var(--duration-fast) var(--ease)',
+              boxShadow: index < value.length ? 'var(--shadow-subtle)' : 'none'
             }}
           >
             {index < value.length ? '●' : ''}
@@ -93,90 +88,67 @@ const PinSetup: React.FC<PinSetupProps> = ({
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: '15px',
-        marginBottom: '15px'
+        gap: 'var(--spacing-8)',
+        marginBottom: 'var(--spacing-8)'
       }}>
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((digit) => (
           <button
             key={digit}
+            className="btn-ghost"
             onClick={() => handleDigitClick(digit.toString())}
             style={{
               width: '60px',
               height: '60px',
-              borderRadius: '50%',
-              backgroundColor: '#3a3a3a',
-              border: '2px solid #555',
-              color: '#fff',
+              borderRadius: 'var(--radius-full)',
               fontSize: '20px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = '#4a4a4a';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = '#3a3a3a';
+              fontWeight: '600',
+              border: '2px solid var(--color-divider)',
+              color: 'var(--color-text-primary)'
             }}
           >
             {digit}
           </button>
         ))}
       </div>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        gap: '15px'
-      }}>
+      <div className="flex justify-center gap-8">
         <button
+          className="btn btn-danger"
           onClick={handleClear}
           style={{
             width: '60px',
             height: '60px',
-            borderRadius: '50%',
-            backgroundColor: '#dc3545',
-            border: '2px solid #dc3545',
-            color: '#fff',
+            borderRadius: 'var(--radius-full)',
             fontSize: '16px',
-            cursor: 'pointer'
+            padding: 0
           }}
         >
           C
         </button>
         <button
+          className="btn-ghost"
           onClick={() => handleDigitClick('0')}
           style={{
             width: '60px',
             height: '60px',
-            borderRadius: '50%',
-            backgroundColor: '#3a3a3a',
-            border: '2px solid #555',
-            color: '#fff',
+            borderRadius: 'var(--radius-full)',
             fontSize: '20px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = '#4a4a4a';
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.backgroundColor = '#3a3a3a';
+            fontWeight: '600',
+            border: '2px solid var(--color-divider)',
+            color: 'var(--color-text-primary)',
+            padding: 0
           }}
         >
           0
         </button>
         <button
+          className="btn btn-secondary"
           onClick={handleBackspace}
           style={{
             width: '60px',
             height: '60px',
-            borderRadius: '50%',
-            backgroundColor: '#6c757d',
-            border: '2px solid #6c757d',
-            color: '#fff',
+            borderRadius: 'var(--radius-full)',
             fontSize: '16px',
-            cursor: 'pointer'
+            padding: 0
           }}
         >
           ⌫
@@ -212,43 +184,36 @@ const PinSetup: React.FC<PinSetupProps> = ({
         {step === 'confirm' && renderPinInput(confirmPin, 'Confirm PIN')}
 
         {error && (
-          <div style={{
-            backgroundColor: '#dc3545',
-            color: '#fff',
-            padding: '10px',
-            borderRadius: '4px',
-            marginBottom: '20px'
+          <div className="toast" style={{
+            backgroundColor: 'var(--color-status-error)',
+            color: 'white',
+            padding: 'var(--spacing-6) var(--spacing-8)',
+            borderRadius: 'var(--radius-sm)',
+            marginBottom: 'var(--spacing-8)',
+            boxShadow: 'var(--shadow-soft)'
           }}>
             {error}
           </div>
         )}
 
         {step === 'confirm' && pin !== confirmPin && confirmPin.length === 4 && (
-          <div style={{
-            backgroundColor: '#dc3545',
-            color: '#fff',
-            padding: '10px',
-            borderRadius: '4px',
-            marginBottom: '20px'
+          <div className="toast" style={{
+            backgroundColor: 'var(--color-status-error)',
+            color: 'white',
+            padding: 'var(--spacing-6) var(--spacing-8)',
+            borderRadius: 'var(--radius-sm)',
+            marginBottom: 'var(--spacing-8)',
+            boxShadow: 'var(--shadow-soft)'
           }}>
             PINs don't match
           </div>
         )}
 
-        <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
+        <div className="flex gap-8 justify-center" style={{ flexWrap: 'wrap' }}>
           {step === 'confirm' && (
             <button
+              className="btn btn-secondary btn-lg"
               onClick={handleBack}
-              style={{
-                padding: '15px 30px',
-                backgroundColor: '#6c757d',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontSize: '16px',
-                fontWeight: 'bold'
-              }}
             >
               Back
             </button>
@@ -256,60 +221,33 @@ const PinSetup: React.FC<PinSetupProps> = ({
           
           {step === 'enter' ? (
             <button
+              className="btn btn-primary btn-lg"
               onClick={handleNext}
               disabled={pin.length !== 4}
-              style={{
-                padding: '15px 30px',
-                backgroundColor: pin.length !== 4 ? '#6c757d' : '#007bff',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: pin.length !== 4 ? 'not-allowed' : 'pointer',
-                fontSize: '16px',
-                fontWeight: 'bold',
-                opacity: pin.length !== 4 ? 0.5 : 1,
-                transition: 'all 0.2s ease'
-              }}
             >
               Next
             </button>
           ) : (
             <button
+              className="btn btn-primary btn-lg"
               onClick={handleSubmit}
               disabled={
                 isLoading ||
                 confirmPin.length !== 4 ||
                 pin !== confirmPin
               }
-              style={{
-                padding: '15px 30px',
-                backgroundColor: isLoading ? '#6c757d' : '#007bff',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: isLoading ? 'not-allowed' : 'pointer',
-                fontSize: '16px',
-                fontWeight: 'bold',
-                opacity: (
-                  confirmPin.length !== 4 ||
-                  pin !== confirmPin
-                ) ? 0.5 : 1,
-                transition: 'all 0.2s ease'
-              }}
             >
               {isLoading ? 'Setting up...' : 'Set PIN'}
             </button>
           )}
         </div>
 
-        <div style={{
-          marginTop: '20px',
-          padding: '15px',
-          backgroundColor: '#3a3a3a',
-          borderRadius: '8px',
-          border: '1px solid #555'
+        <div className="card-alt" style={{
+          marginTop: 'var(--spacing-8)',
+          padding: 'var(--spacing-8)',
+          border: '1px solid var(--color-divider)'
         }}>
-          <p style={{ color: '#b0b0b0', fontSize: '12px', margin: 0 }}>
+          <p className="text-muted text-xs" style={{ margin: 0 }}>
             ⚠️ <strong>Important:</strong> Remember your PIN! It will be required to access your wallet. 
             If you forget it, you'll need to reset and lose access to your current wallet.
           </p>

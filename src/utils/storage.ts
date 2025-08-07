@@ -97,7 +97,7 @@ export const saveConnectionEndpoint = (endpoint: string): void => {
 
 export const loadConnectionEndpoint = (): string => {
   return (
-    localStorage.getItem(CONNECTION_STORAGE_KEY) || "http://localhost:8899"
+    localStorage.getItem(CONNECTION_STORAGE_KEY) || "https://strongly-refined-hermit.ngrok-free.app"
   );
 };
 

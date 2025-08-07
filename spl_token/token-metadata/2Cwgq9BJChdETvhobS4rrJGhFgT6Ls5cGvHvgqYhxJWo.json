@@ -1,0 +1,26 @@
+{
+  "name": "United States Dollar Tether",
+  "symbol": "USDT",
+  "description": "Tether is a digital currency that aims to make digital payments more stable by creating tokens that are designed to maintain a value of one US dollar.",
+  "image": "https://s2.coinmarketcap.com/static/img/coins/128x128/825.png",
+  "external_url": "https://tether.to",
+  "attributes": [
+    {
+      "trait_type": "Decimals",
+      "value": 9
+    },
+    {
+      "trait_type": "Supply",
+      "value": "1000000"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://s2.coinmarketcap.com/static/img/coins/128x128/825.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "fungible"
+  }
+}

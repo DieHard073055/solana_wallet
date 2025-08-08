@@ -134,12 +134,7 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ connection, pub
 
         <div className="mt-8 text-xs text-muted" style={{ lineHeight: 'var(--line-height-relaxed)' }}>
           <p className="mb-2">💡 Showing recent transactions. Click "Copy" to copy full signature.</p>
-          <p className="mb-2"><strong>Note:</strong> Basic RPC provides limited transaction history. For full history with amounts and token transfers, consider using:</p>
-          <ul className="mb-2" style={{ paddingLeft: 'var(--spacing-8)' }}>
-            <li>Helius RPC endpoint (free tier available)</li>
-            <li>Solscan API for detailed transaction data</li>
-            <li>Jupiter API for DeFi transaction parsing</li>
-          </ul>
+          <p className="mb-2"><strong>Note:</strong> Basic RPC provides limited transaction history</p>
           <p>Current endpoint: <span className={connection?.rpcEndpoint.includes('helius') ? 'text-success' : 'text-warning'}>{connection?.rpcEndpoint.includes('helius') ? '✅ Helius (Enhanced)' : '⚠️ Basic RPC (Limited)'}</span></p>
         </div>
       </div>

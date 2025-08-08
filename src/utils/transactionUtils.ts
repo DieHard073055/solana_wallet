@@ -1,4 +1,5 @@
 import { Connection, Transaction, Signer, TransactionSignature, Commitment } from '@solana/web3.js';
+import { globalCacheManager } from '../hooks/useCacheManager';
 
 interface SendAndConfirmOptions {
   commitment?: Commitment;
@@ -40,6 +41,12 @@ export async function sendAndConfirmTransactionWithPolling(
           throw new Error(`Transaction failed: ${JSON.stringify(status.value.err)}`);
         }
         console.log(`Transaction confirmed after ${retries + 1} attempts`);
+        
+        // Invalidate cache after successful transaction
+        globalCacheManager.markDirty('balance');
+        globalCacheManager.markDirty('tokens');
+        globalCacheManager.markDirty('transactionHistory');
+        
         return signature;
       }
 

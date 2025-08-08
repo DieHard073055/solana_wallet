@@ -3,6 +3,7 @@ import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID, AccountLayout } from '@solana/spl-token';
 import { TokenBalance } from '../types/wallet';
 import { getTokenMetadata } from '../utils/tokenMetadata';
+import { useCacheManager } from './useCacheManager';
 
 export const useBalance = (connection: Connection | null, publicKey: string | null) => {
   const [solBalance, setSolBalance] = useState<number>(0);
@@ -10,6 +11,8 @@ export const useBalance = (connection: Connection | null, publicKey: string | nu
   const [allTokens, setAllTokens] = useState<TokenBalance[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
+  const [hasInitialLoaded, setHasInitialLoaded] = useState(false);
+  const { isDirty, markClean, markDirty } = useCacheManager();
 
   const fetchSOLBalance = async () => {
     if (!connection || !publicKey) return;
@@ -87,19 +90,33 @@ export const useBalance = (connection: Connection | null, publicKey: string | nu
     return allTokensList;
   };
 
-  const refreshBalances = async () => {
+  const refreshBalances = async (forceRefresh = false) => {
     if (!connection || !publicKey) return;
+
+    // Always load on first run, then check cache
+    const shouldSkip = hasInitialLoaded && !forceRefresh && !isDirty('balance') && !isDirty('tokens');
+    
+    if (shouldSkip) {
+      console.log('Balance cache is clean, skipping refresh');
+      return;
+    }
 
     setIsLoading(true);
     setError('');
     
     try {
+      console.log('Refreshing balances...');
       const [solBal, splTokens] = await Promise.all([
         fetchSOLBalance(),
         fetchTokenBalances(),
       ]);
       
       await createUnifiedTokenList(solBal || 0, splTokens || []);
+      
+      // Mark cache as clean after successful refresh
+      markClean('balance');
+      markClean('tokens');
+      setHasInitialLoaded(true);
     } catch (err: any) {
       setError('Failed to refresh balances');
     } finally {
@@ -114,8 +131,17 @@ export const useBalance = (connection: Connection | null, publicKey: string | nu
       setSolBalance(0);
       setTokenBalances([]);
       setAllTokens([]);
+      setHasInitialLoaded(false);
     }
   }, [connection, publicKey]);
+
+  // Listen for cache invalidation
+  useEffect(() => {
+    if (connection && publicKey && (isDirty('balance') || isDirty('tokens'))) {
+      console.log('Cache is dirty, refreshing balances');
+      refreshBalances();
+    }
+  }, [isDirty('balance'), isDirty('tokens'), connection, publicKey]);
 
   return {
     solBalance,

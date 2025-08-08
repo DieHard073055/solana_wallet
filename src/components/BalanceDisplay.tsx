@@ -196,7 +196,7 @@ const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ connection, publicKey, 
         </div>
 
         <div className="mt-8 text-xs text-muted text-center">
-          <p>💡 Tip: Click on token mint addresses to copy the full address to clipboard</p>
+          <p>💡 Tip: Click on token addresses to copy the full address to clipboard</p>
         </div>
       </div>
     </div>

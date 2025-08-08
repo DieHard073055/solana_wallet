@@ -12,6 +12,7 @@ import {
   migrateLegacyWallet
 } from '../utils/storage';
 import { pinManager } from '../utils/pinStorage';
+import { globalCacheManager } from './useCacheManager';
 
 export const useWallet = () => {
   const [wallet, setWallet] = useState<WalletState>({
@@ -111,6 +112,9 @@ export const useWallet = () => {
           isLoading: false,
           error: null
         });
+
+        // Invalidate all cache when wallet is loaded
+        globalCacheManager.markDirty('all');
       } else {
         setAuthState({
           needsPinSetup: false,
@@ -210,6 +214,9 @@ export const useWallet = () => {
         hasWallet: true,
         error: null
       }));
+
+      // Invalidate all cache when new wallet is generated
+      globalCacheManager.markDirty('all');
       
       return true;
     } catch (error) {
@@ -248,6 +255,9 @@ export const useWallet = () => {
         hasWallet: true,
         error: null
       }));
+
+      // Invalidate all cache when wallet is imported
+      globalCacheManager.markDirty('all');
       
       return true;
     } catch (error) {
@@ -286,6 +296,9 @@ export const useWallet = () => {
       hasWallet: false,
       error: null
     }));
+
+    // Invalidate all cache when wallet is disconnected
+    globalCacheManager.markDirty('all');
   };
 
   const exportPrivateKey = (): string | null => {

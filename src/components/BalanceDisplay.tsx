@@ -17,10 +17,10 @@ const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ connection, publicKey, 
   const formatBalance = (token: any) => {
     // For SOL (native token), display as SOL units
     if (token.mint === '11111111111111111111111111111112') {
-      return (token.balance / 1000000000).toFixed(9) + ' ' + (token.symbol || 'SOL');
+      return (token.balance / 1000000000).toFixed(9) + ' ' + token.symbol;
     }
     // For SPL tokens, use existing formatting
-    return formatTokenAmount(token.balance, token.decimals);
+    return formatTokenAmount(token.balance, token.decimals) + ' ' + token.symbol;
   };
 
   if (!isConnected || !publicKey) {

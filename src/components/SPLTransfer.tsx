@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Connection, PublicKey, Transaction, sendAndConfirmTransaction } from '@solana/web3.js';
+import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { sendAndConfirmTransactionWithPolling } from '../utils/transactionUtils';
 import { TOKEN_PROGRAM_ID, createTransferInstruction, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction } from '@solana/spl-token';
 import { isValidSolanaAddress, isValidAmount, shortenAddress } from '../utils/validation';
 import { useWallet } from '../hooks/useWallet';
@@ -143,11 +144,11 @@ const SPLTransfer: React.FC<SPLTransferProps> = ({ connection, tokenBalances, on
         )
       );
 
-      const signature = await sendAndConfirmTransaction(
+      const signature = await sendAndConfirmTransactionWithPolling(
         connection,
         transaction,
         [fromWallet],
-        { commitment: 'confirmed' }
+        { commitment: 'confirmed', pollingInterval: 2000 }
       );
 
       setSuccess(`Token transfer successful! Signature: ${signature}`);

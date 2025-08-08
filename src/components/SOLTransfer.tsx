@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
+import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { sendAndConfirmTransactionWithPolling } from '../utils/transactionUtils';
 import { isValidSolanaAddress, isValidAmount } from '../utils/validation';
 import { useWallet } from '../hooks/useWallet';
 import QRCodeScanner from './QRCodeScanner';
@@ -131,11 +132,11 @@ const SOLTransfer: React.FC<SOLTransferProps> = ({ connection, onTransactionComp
       console.log(`To: ${toPubkey.toString()}`);
       console.log(`Amount: ${finalLamports} lamports`);
 
-      const signature = await sendAndConfirmTransaction(
+      const signature = await sendAndConfirmTransactionWithPolling(
         connection,
         transaction,
         [wallet.keypair],
-        { commitment: 'confirmed' }
+        { commitment: 'confirmed', pollingInterval: 2000 }
       );
 
       console.log(`Transaction successful! Signature: ${signature}`);

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
+import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { sendAndConfirmTransactionWithPolling } from '../utils/transactionUtils';
 import { TOKEN_PROGRAM_ID, createTransferInstruction, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction } from '@solana/spl-token';
 import { isValidSolanaAddress, isValidAmount, shortenAddress, formatTokenAmount } from '../utils/validation';
 import { useWallet } from '../hooks/useWallet';
@@ -132,11 +133,11 @@ const UnifiedTransfer: React.FC<UnifiedTransferProps> = ({ connection, allTokens
       })
     );
 
-    const signature = await sendAndConfirmTransaction(
+    const signature = await sendAndConfirmTransactionWithPolling(
       connection,
       transaction,
       [wallet.keypair],
-      { commitment: 'confirmed' }
+      { commitment: 'confirmed', pollingInterval: 2000 }
     );
 
     const actualAmountSent = finalLamports / LAMPORTS_PER_SOL;
@@ -192,11 +193,11 @@ const UnifiedTransfer: React.FC<UnifiedTransferProps> = ({ connection, allTokens
       )
     );
 
-    const signature = await sendAndConfirmTransaction(
+    const signature = await sendAndConfirmTransactionWithPolling(
       connection,
       transaction,
       [fromWallet],
-      { commitment: 'confirmed' }
+      { commitment: 'confirmed', pollingInterval: 2000 }
     );
 
     return `${getTokenSymbol(selectedToken)} transfer successful! Signature: ${signature}`;

@@ -1,0 +1,26 @@
+{
+  "name": "MVR",
+  "symbol": "MVR",
+  "description": "Maldivian Ruffiya",
+  "image": "https://raw.githubusercontent.com/DieHard073055/solana_wallet/main/public/assets/ESu45zwuBD8VNQGTUxC3s34wnG7p1nMGZkc5ao6fYgYq.png",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Decimals",
+      "value": 9
+    },
+    {
+      "trait_type": "Supply",
+      "value": "1000000"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "",
+        "type": "image/png"
+      }
+    ],
+    "category": "fungible"
+  }
+}

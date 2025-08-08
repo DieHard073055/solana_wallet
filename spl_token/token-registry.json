@@ -12,18 +12,18 @@
     "local",
     "development"
   ],
-  "logoURI": "https://s2.coinmarketcap.com/static/img/coins/128x128/825.png",
+  "logoURI": "https://s2.coinmarketcap.com/static/img/coins/128x128/28173.png",
   "tokens": [
     {
       "address": "11111111111111111111111111111112",
-      "name": "Solana",
-      "symbol": "SOL",
+      "name": "RAN",
+      "symbol": "RAN",
       "decimals": 9,
-      "website": "https://solana.com",
+      "website": "",
       "socials": {
-        "twitter": "https://x.com/solana"
+        "twitter": ""
       },
-      "description": "Solana is a high-performance blockchain supporting builders around the world creating crypto apps that scale today.",
+      "description": "",
       "tags": [
         "native",
         "primary"

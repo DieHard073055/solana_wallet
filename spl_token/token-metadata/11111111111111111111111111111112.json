@@ -1,8 +1,8 @@
 {
-  "name": "Solana",
-  "symbol": "SOL",
+  "name": "RAN",
+  "symbol": "RAN",
   "description": "Solana is a high-performance blockchain supporting builders around the world creating crypto apps that scale today.",
-  "image": "https://s2.coinmarketcap.com/static/img/coins/128x128/5426.png",
+  "image": "https://s2.coinmarketcap.com/static/img/coins/128x128/28173.png",
   "external_url": "https://solana.com",
   "attributes": [
     {
@@ -17,7 +17,7 @@
   "properties": {
     "files": [
       {
-        "uri": "https://s2.coinmarketcap.com/static/img/coins/128x128/5426.png",
+        "uri": "https://s2.coinmarketcap.com/static/img/coins/128x128/28173.png",
         "type": "image/png"
       }
     ],

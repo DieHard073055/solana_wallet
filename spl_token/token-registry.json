@@ -43,6 +43,29 @@
         "local",
         "development"
       ]
+    },
+    {
+      "address": "ESu45zwuBD8VNQGTUxC3s34wnG7p1nMGZkc5ao6fYgYq",
+      "name": "MVR",
+      "symbol": "MVR",
+      "decimals": 9,
+      "socials": {},
+      "description": "Maldivian Ruffiya",
+      "tags": [
+        "local",
+        "development"
+      ]
+    },
+    {
+      "address": "6ioLQUUvpc312EnfELevzTtCnvopfFr2RKNY7ZE8As8w",
+      "name": "MUSD",
+      "symbol": "MUSD",
+      "decimals": 9,
+      "socials": {},
+      "tags": [
+        "local",
+        "development"
+      ]
     }
   ]
 }

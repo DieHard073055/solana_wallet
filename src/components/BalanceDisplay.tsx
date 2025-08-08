@@ -174,7 +174,7 @@ const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ connection, publicKey, 
                       {formatBalance(token)}
                     </div>
                     <div className="text-xs text-muted mt-2">
-                      <strong>Mint:</strong> {shortenAddress(token.mint)}
+                      <strong>Token:</strong> {shortenAddress(token.mint)}
                       <span 
                         className="text-gold"
                         style={{ 

@@ -33,7 +33,7 @@ const ConnectionManager: React.FC = () => {
             type="text"
             value={customEndpoint}
             onChange={(e) => setCustomEndpoint(e.target.value)}
-            placeholder="https://strongly-refined-hermit.ngrok-free.app"
+            placeholder="https://alina.tail6aed97.ts.net"
             style={{ 
               width: '300px', 
               padding: '8px',
@@ -118,7 +118,7 @@ const ConnectionManager: React.FC = () => {
       <div style={{ marginTop: '15px', fontSize: '14px', color: '#6c757d' }}>
         <p><strong>Common Endpoints:</strong></p>
         <ul style={{ margin: '5px 0', paddingLeft: '20px' }}>
-          <li>Mainnet: https://strongly-refined-hermit.ngrok-free.app</li>
+          <li>Mainnet: https://alina.tail6aed97.ts.net</li>
         </ul>
       </div>
     </div>

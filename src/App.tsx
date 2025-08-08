@@ -7,6 +7,7 @@ import ConnectionManager from './components/ConnectionManager'
 import BalanceDisplay from './components/BalanceDisplay'
 import UnifiedTransfer from './components/UnifiedTransfer'
 import TransactionHistory from './components/TransactionHistory'
+import ContactsManager from './components/ContactsManager'
 import PinAuth from './components/PinAuth'
 import PinSetup from './components/PinSetup'
 import WalletCreation from './components/WalletCreation'
@@ -40,7 +41,7 @@ function App() {
   const { connection, connectionState } = useConnection();
   const { allTokens } = useBalance(connection, wallet.publicKey);
   const { addRecentTransaction } = useTransactionHistory(connection, wallet.publicKey);
-  const [activeTab, setActiveTab] = useState<'overview' | 'send' | 'history' | 'wallet' | 'network'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'send' | 'history' | 'contacts' | 'wallet' | 'network'>('overview');
   const [walletCreationMode, setWalletCreationMode] = useState<'create' | 'import' | null>(null);
   const [currentQuote, setCurrentQuote] = useState('');
 
@@ -232,6 +233,7 @@ function App() {
             { id: 'overview', label: 'Overview' },
             { id: 'send', label: 'Send' },
             { id: 'history', label: 'History' },
+            { id: 'contacts', label: 'Contacts' },
             { id: 'wallet', label: 'Wallet' },
             { id: 'network', label: 'Network' }
           ].map((tab) => (
@@ -268,6 +270,10 @@ function App() {
               publicKey={wallet.publicKey}
               isConnected={wallet.isConnected}
             />
+          )}
+
+          {activeTab === 'contacts' && (
+            <ContactsManager />
           )}
 
           {activeTab === 'wallet' && (
@@ -314,9 +320,28 @@ function App() {
           }}>
             "{currentQuote}"
           </p>
-          <p className="text-muted text-sm">
-            Built with React, TypeScript, and @solana/web3.js
-          </p>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            gap: 'var(--spacing-4)',
+            marginBottom: 'var(--spacing-4)'
+          }}>
+            <span style={{
+              backgroundColor: '#ff6b35',
+              color: 'white',
+              padding: '2px 8px',
+              borderRadius: '4px',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              textTransform: 'uppercase'
+            }}>
+              TESTNET
+            </span>
+            <p className="text-muted text-sm" style={{ margin: 0 }}>
+              Built with React, TypeScript, and @solana/web3.js
+            </p>
+          </div>
         </footer>
       </div>
     </div>

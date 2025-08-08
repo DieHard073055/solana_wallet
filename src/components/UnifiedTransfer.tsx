@@ -6,6 +6,8 @@ import { isValidSolanaAddress, isValidAmount, shortenAddress, formatTokenAmount 
 import { useWallet } from '../hooks/useWallet';
 import { TokenBalance } from '../types/wallet';
 import QRCodeScanner from './QRCodeScanner';
+import ContactSelector from './ContactSelector';
+import { useContacts } from '../hooks/useContacts';
 
 interface UnifiedTransferProps {
   connection: Connection | null;
@@ -15,6 +17,7 @@ interface UnifiedTransferProps {
 
 const UnifiedTransfer: React.FC<UnifiedTransferProps> = ({ connection, allTokens, onTransactionComplete }) => {
   const { wallet } = useWallet();
+  const { markContactUsed, getContactByAddress } = useContacts();
   const [selectedToken, setSelectedToken] = useState<TokenBalance | null>(null);
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
@@ -22,6 +25,7 @@ const UnifiedTransfer: React.FC<UnifiedTransferProps> = ({ connection, allTokens
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showScanner, setShowScanner] = useState(false);
+  const [selectedContactName, setSelectedContactName] = useState<string>('');
 
   const validateForm = (): boolean => {
     if (!recipient.trim()) {
@@ -76,6 +80,16 @@ const UnifiedTransfer: React.FC<UnifiedTransferProps> = ({ connection, allTokens
 
   const handleScanError = (error: string) => {
     setError(`QR Scan Error: ${error}`);
+  };
+
+  const handleContactSelect = (address: string, name?: string) => {
+    setRecipient(address);
+    setSelectedContactName(name || '');
+    setError('');
+  };
+
+  const handleContactAdd = (name: string, address: string) => {
+    setSelectedContactName(name);
   };
 
   const getTokenBalance = (token: TokenBalance): number => {
@@ -141,10 +155,10 @@ const UnifiedTransfer: React.FC<UnifiedTransferProps> = ({ connection, allTokens
     );
 
     const actualAmountSent = finalLamports / LAMPORTS_PER_SOL;
-    let successMessage = `SOL transfer successful! Signature: ${signature}`;
+    let successMessage = `RAN transfer successful! Signature: ${signature}`;
     
     if (finalLamports > lamports) {
-      successMessage += ` (Sent ${actualAmountSent.toFixed(9)} SOL to ensure account rent exemption)`;
+      successMessage += ` (Sent ${actualAmountSent.toFixed(9)} RAN to ensure account rent exemption)`;
     }
 
     return successMessage;
@@ -227,9 +241,14 @@ const UnifiedTransfer: React.FC<UnifiedTransferProps> = ({ connection, allTokens
       }
 
       setSuccess(successMessage);
+      
+      // Mark contact as used if it exists
+      markContactUsed(recipient);
+      
       setRecipient('');
       setAmount('');
       setSelectedToken(null);
+      setSelectedContactName('');
       
       if (onTransactionComplete) {
         onTransactionComplete(successMessage.match(/Signature: (\w+)/)?.[1] || '');
@@ -309,16 +328,24 @@ const UnifiedTransfer: React.FC<UnifiedTransferProps> = ({ connection, allTokens
           {/* Recipient Address */}
           <div className="mb-8">
             <label className="block text-sm font-medium text-secondary mb-4">
-              Recipient Address:
+              Recipient Thijoori Address:
             </label>
             <div className="flex gap-4">
               <input
                 type="text"
                 className="input font-mono"
                 value={recipient}
-                onChange={(e) => setRecipient(e.target.value)}
-                placeholder="Enter recipient's Solana address"
+                onChange={(e) => {
+                  setRecipient(e.target.value);
+                  setSelectedContactName('');
+                }}
+                placeholder="Enter recipient's Thijoori address"
                 style={{ flex: 1 }}
+              />
+              <ContactSelector 
+                onSelectContact={handleContactSelect}
+                onAddContact={handleContactAdd}
+                currentAddress={recipient}
               />
               <button
                 type="button"
@@ -329,6 +356,13 @@ const UnifiedTransfer: React.FC<UnifiedTransferProps> = ({ connection, allTokens
                 {showScanner ? '✕ Close' : '📷 Scan QR'}
               </button>
             </div>
+            
+            {/* Show selected contact name */}
+            {selectedContactName && (
+              <div className="mt-2 text-sm text-gold">
+                📞 Sending to: {selectedContactName}
+              </div>
+            )}
             
             {showScanner && (
               <div className="mt-8">

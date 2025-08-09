@@ -18,5 +18,5 @@ export default defineConfig({
   define: {
     global: "globalThis",
   },
-  base: "/solana_wallet/",
+  base: "/thijoori/",
 });

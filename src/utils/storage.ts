@@ -97,7 +97,7 @@ export const saveConnectionEndpoint = (endpoint: string): void => {
 
 export const loadConnectionEndpoint = (): string => {
   return (
-    localStorage.getItem(CONNECTION_STORAGE_KEY) || "https://alina.tail6aed97.ts.net"
+    localStorage.getItem(CONNECTION_STORAGE_KEY) ||
+    "https://alina.tail6aed97.ts.net"
   );
 };
-

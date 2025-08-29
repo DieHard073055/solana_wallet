@@ -33,7 +33,7 @@ const ConnectionManager: React.FC = () => {
             type="text"
             value={customEndpoint}
             onChange={(e) => setCustomEndpoint(e.target.value)}
-            placeholder="https://alina.tail6aed97.ts.net"
+            placeholder="https://alina.python-census.ts.net"
             style={{ 
               width: '300px', 
               padding: '8px',
